@@ -1,0 +1,140 @@
+
+/* Styling for input */
+input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: large;
+    margin: 10px;
+    width: 95%;
+
+}
+/* Styling for input[type="date"] */
+input[type="date"] {    
+    font-size: large;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: rgb(235, 235, 235)
+}
+
+input[type="text"] {    
+    font-size: large;
+    background-color: rgb(235, 235, 235);
+    padding: 10px;
+}
+
+input[type="number"] {    
+    font-size: large;
+    background-color: rgb(235, 235, 235)
+}
+/* Styling for select bar */
+select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: large;
+    margin-top: 2px;
+    width: 100%;
+    margin: 15px 10px;
+}
+
+/* Styling for button */
+
+
+textarea {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: space-between;
+    max-width: 100%;
+    width:100%;
+    background-color: rgb(235, 235, 235);
+    border: 1px solid #ccc;
+    font-size: large;
+    font-family: 'Courier New', Courier, monospace;
+    border-radius: 10px;
+    margin-top: 2px;
+    padding: 5px 5px;
+
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: space-center;
+    max-width: 100%;
+    width: 500px
+}
+
+.organize {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.input-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    font-size: large;
+    margin: 10px;
+    width: 100%;
+}
+
+.add-age{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: x-large;
+    font-weight: 600;
+    width: 60px;
+    background-color: silver;
+    color: black;
+    border-radius: 100px;
+    margin: none;
+    padding: none;
+}
+
+
+.parent-ages{
+    width: 100%;
+    left: 0;
+    padding: 0 0;
+    margin: 0 0;
+}
+
+.ages{
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    font-size: large;
+    margin: 1px;
+    justify-content: space-between;
+    padding: 0 0;
+    margin: 0 0;
+}
+
+.conditions{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: large;
+    margin: 10px;
+    justify-content: left;
+    justify-items: left;
+}
+
+input[type="checkbox"]{
+    width: 100%;
+    margin: 5 0;
+    padding: 0 0;
+    justify-content: right;
+    border: 1px solid #ccc;
+    margin: 10px;
+    width: 20px;
+}

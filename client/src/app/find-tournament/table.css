@@ -1,0 +1,80 @@
+/* table.css */
+
+/* Styles for the table */
+table {
+    width: 100%;
+    border-collapse: collapse;  
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles for table headers */
+th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: bold;
+    padding: 20px;
+    text-align: left;
+}
+
+/* Styles for table cells */
+td {
+    padding: 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+/* Styles for alternate rows */
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.filter{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+}
+
+.filter-input{
+    width: 100%;
+    padding: 5px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+.select-filter{
+    width: auto;
+    padding: 5px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+.title{
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+
+}
+
+.row{
+    padding: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 500px;
+
+}
+
+/* Table row styles */
+
+tr:hover {
+    cursor: pointer;
+}
