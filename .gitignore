@@ -37,8 +37,10 @@ yarn-error.log*
 next-env.d.ts
 
 
-
-
 #python
 *.pyc
 *.mako
+
+
+#log
+*.log

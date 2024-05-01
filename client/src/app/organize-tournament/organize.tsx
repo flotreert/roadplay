@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import ProgressBar from '../components/progressBar';
 import { TournamentCreate} from '@/client';
+import {useCreateTournament} from '../services/tournaments.service';
+
 import './organize.css';
 
 const sports = ['Football', 'Basketball', 'Tennis', 'Volleyball'];
@@ -13,7 +15,7 @@ const sexes = ['Male', 'Female', 'Mixed'];
 
 
 interface FormProps {
-    onSubmit: (data: TournamentCreate) => void;
+    // onSubmit: (data: TournamentCreate) => void;
   }
 
 const calculateProgress = (values: TournamentCreate): number => {
@@ -37,7 +39,7 @@ const calculateProgress = (values: TournamentCreate): number => {
 };
 
 
-const OrganizeForm: React.FC<FormProps> = ({onSubmit}) => {
+const OrganizeForm: React.FC<FormProps> = () => {
     const [progressValue, setProgressValue] = useState<number>(0);
     //TODO: Change Id from the DB
     const [formValues, setFormValues] = useState<TournamentCreate>({
@@ -100,18 +102,20 @@ const OrganizeForm: React.FC<FormProps> = ({onSubmit}) => {
         });
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        onSubmit(formValues);
-    }
+    const {mutate: createTournament} = useCreateTournament();
 
+    const onSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
+        event.preventDefault();
+        createTournament(formValues);
+    }
+    
 
     // Filter age groups based on selected age groups
     return (
         <div>
             <h1>Organize Tournament</h1>
             <ProgressBar progress={progressValue} />
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={onSubmit}>
                 <label>
                     Name
                     <input type="text" name="name" value={formValues.name} onChange={handleInputChange} required={true} />

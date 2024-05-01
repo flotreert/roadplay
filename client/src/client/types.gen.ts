@@ -5,9 +5,32 @@ export type HTTPValidationError = {
 };
 
 /**
- * Tournament create model
+ * Tournament model
  */
-export type TournamentCreate = {
+export type Tournament = {
+    id: number;
+    organizer_id: number;
+    created_at: string;
+    updated_at: string;
+    is_full?: boolean;
+    name: string;
+    sex: string;
+    start_date: string;
+    end_date: string;
+    location: string;
+    sport: string;
+    age_group: Array<(string)>;
+    category: string;
+    fees: number;
+    number_of_teams: number;
+    current_teams: number;
+    description: string;
+};
+
+/**
+ * Tournament display model, lighter version of Tournament model
+ */
+export type TournamentDisplay = {
     name: string;
     sex: string;
     start_date: string;
@@ -19,7 +42,6 @@ export type TournamentCreate = {
     fees: number;
     number_of_teams: number;
     description: string;
-    organizer_id: number;
 };
 
 export type ValidationError = {
@@ -45,12 +67,12 @@ export type $OpenApiTs = {
                 /**
                  * Successful Response
                  */
-                200: unknown;
+                200: Array<Tournament>;
             };
         };
         post: {
             req: {
-                requestBody: TournamentCreate;
+                requestBody: TournamentDisplay;
             };
             res: {
                 /**
@@ -73,7 +95,7 @@ export type $OpenApiTs = {
                 /**
                  * Successful Response
                  */
-                200: unknown;
+                200: Tournament;
                 /**
                  * Validation Error
                  */

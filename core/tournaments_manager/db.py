@@ -6,7 +6,7 @@ from core.tournaments_manager import schemas
 
 ### TOURNAMENTS ###
 
-def add_tournament(tournament: schemas.TournamentCreate) -> None:
+def add_tournament(tournament: schemas.TournamentDisplay) -> None:
     """Creates tournament."""
     tournament = model.Tournament(**tournament.model_dump())
     session = init_db.get_session()
@@ -63,6 +63,8 @@ def fill_tournament(tournament_id: int) -> model.Tournament:
     """Fills tournament."""
     session = init_db.get_session()
     tournament = session.query(model.Tournament).filter(model.Tournament.id == tournament_id).first()
+    if tournament.is_full:
+        return tournament
     tournament.current_teams += 1
     if tournament.current_teams == tournament.number_of_teams:
         tournament.is_full = True

@@ -1,19 +1,11 @@
-import React, { useState } from 'react';
-import { Tournament } from '../../components/types';
+import React, { use, useState } from 'react';
+import { Tournament } from '@/client';
 import './form.css';
+import { useFillTournament } from '@/app/services/tournaments.service';
 
+// TODO: register who's participating to the tournament
 const ParticipateForm: React.FC<{ tournament: Tournament }> = ({ tournament }) => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-
-    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setName(event.target.value);
-    };
-
-    const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(event.target.value);
-    };
-
+    const {mutate: fillTournament} = useFillTournament();
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         // Perform form submission logic here
@@ -32,7 +24,7 @@ const ParticipateForm: React.FC<{ tournament: Tournament }> = ({ tournament }) =
                 });
             }
         }
-        console.log('Form submitted:', tournament.id);
+        fillTournament(tournament.id);
     };
     const handleContactOrganizer = () => {
         // Perform contact organizer logic here

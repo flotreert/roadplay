@@ -2,9 +2,17 @@ import datetime
 
 import pydantic 
 
-
-class Tournament(pydantic.BaseModel):
+class TournamentBase(pydantic.BaseModel):
     """Tournament base model"""
+    id: int
+    organizer_id: int
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
+    is_full: bool = False
+
+
+class Tournament(TournamentBase):
+    """Tournament model"""
     name: str
     sex: str 
     start_date: str #change to date
@@ -16,15 +24,11 @@ class Tournament(pydantic.BaseModel):
     fees: int
     number_of_teams: int
     current_teams: int
-    is_full: bool = False
     description: str
-    organizer_id: int
-    created_at: datetime.datetime
-    updated_at: datetime.datetime
     
 
-class TournamentCreate(pydantic.BaseModel):
-    """Tournament create model"""
+class TournamentDisplay(pydantic.BaseModel):
+    """Tournament display model, lighter version of Tournament model"""
     name: str
     sex: str 
     start_date: str #change to date
@@ -36,5 +40,4 @@ class TournamentCreate(pydantic.BaseModel):
     fees: int
     number_of_teams: int
     description: str
-    organizer_id: int
     

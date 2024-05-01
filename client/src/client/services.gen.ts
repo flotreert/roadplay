@@ -20,7 +20,7 @@ export class DefaultService {
     
     /**
      * Get Tournaments
-     * @returns unknown Successful Response
+     * @returns Tournament Successful Response
      * @throws ApiError
      */
     public static getTournamentsTournamentsGet(): CancelablePromise<$OpenApiTs['/tournaments']['get']['res'][200]> {
@@ -53,7 +53,7 @@ export class DefaultService {
      * Get Tournament
      * @param data The data for the request.
      * @param data.tournamentId
-     * @returns unknown Successful Response
+     * @returns Tournament Successful Response
      * @throws ApiError
      */
     public static getTournamentTournamentsTournamentIdGet(data: $OpenApiTs['/tournaments/{tournament_id}']['get']['req']): CancelablePromise<$OpenApiTs['/tournaments/{tournament_id}']['get']['res'][200]> {
