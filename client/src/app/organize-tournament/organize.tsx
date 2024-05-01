@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import ProgressBar from '../components/progressBar';
-import { Tournament } from '../components/elements';
+import { TournamentCreate} from '@/client';
 import './organize.css';
 
 const sports = ['Football', 'Basketball', 'Tennis', 'Volleyball'];
@@ -13,24 +13,25 @@ const sexes = ['Male', 'Female', 'Mixed'];
 
 
 interface FormProps {
-    onSubmit: (data: Tournament) => void;
+    onSubmit: (data: TournamentCreate) => void;
   }
 
-const calculateProgress = (values: Tournament): number => {
-    const { name, sport, sex, ageGroup, category, startDate, endDate, fees, location, description } = values;
+const calculateProgress = (values: TournamentCreate): number => {
+    const { name, sport, sex, age_group, category, start_date, end_date, fees, location, description } = values;
     const totalFields = Object.keys(values).length;
     let filledFields = 0;
 
     if (name.trim() !== '') filledFields++;
     if (sport.trim() !== '') filledFields++;
     if (sex.trim() !== '') filledFields++;
-    if (ageGroup.length > 0 && ageGroup[0].trim() !== '') filledFields++;
+    if (age_group.length > 0 && age_group[0].trim() !== '') filledFields++;
     if (category.trim() !== '') filledFields++;
-    if (startDate.trim() !== '') filledFields++;
-    if (endDate.trim() !== '') filledFields++;
+    if (start_date.trim() !== '') filledFields++;
+    if (end_date.trim() !== '') filledFields++;
     if (fees > 0) filledFields++;
     if (location.trim() !== '') filledFields++;
     if (description.trim() !== '') filledFields++;
+    if (values.number_of_teams > 0) filledFields++;
 
     return (filledFields / totalFields) * 100;
 };
@@ -39,18 +40,19 @@ const calculateProgress = (values: Tournament): number => {
 const OrganizeForm: React.FC<FormProps> = ({onSubmit}) => {
     const [progressValue, setProgressValue] = useState<number>(0);
     //TODO: Change Id from the DB
-    const [formValues, setFormValues] = useState<Tournament>({
-        id: 0,
+    const [formValues, setFormValues] = useState<TournamentCreate>({
         name: '',
         sport: '', 
         sex: '',
-        ageGroup: [''],
+        age_group: [''],
         category: '',
-        startDate: '',
-        endDate: '',
+        start_date: '',
+        end_date: '',
         fees: 0,
         location: '',
         description: '',
+        number_of_teams: 0,
+        organizer_id: 1,
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -68,33 +70,33 @@ const OrganizeForm: React.FC<FormProps> = ({onSubmit}) => {
     const handleAddAgeGroup = () => {
         setFormValues({
             ...formValues,
-            ageGroup: [...(formValues.ageGroup as string[]),''],
+            age_group: [...(formValues.age_group as string[]),''],
         });
     };
 
     const handleAgeGroupChange = (index: number, value: string) => {
-        let updatedAgeGroup = [...(formValues.ageGroup as string[])];
+        let updatedAgeGroup = [...(formValues.age_group as string[])];
         //TODO: do it in the select:  Remove empty strings
         if (!updatedAgeGroup.includes(value)) {
             updatedAgeGroup[index] = value;
             setFormValues({
             ...formValues,
-            ageGroup: updatedAgeGroup,
+            age_group: updatedAgeGroup,
             });
         }
         setProgressValue(calculateProgress({
             ...formValues,
-            ageGroup: updatedAgeGroup,
+            age_group: updatedAgeGroup,
         }));
         return null;
     };
 
     const handleRemoveAgeGroup = (index: number) => {
-        const updatedAgeGroup = [...(formValues.ageGroup as string[])];
+        const updatedAgeGroup = [...(formValues.age_group as string[])];
         updatedAgeGroup.splice(index, 1);
         setFormValues({
             ...formValues,
-            ageGroup: updatedAgeGroup,
+            age_group: updatedAgeGroup,
         });
     };
 
@@ -116,7 +118,7 @@ const OrganizeForm: React.FC<FormProps> = ({onSubmit}) => {
                 </label>
                 <label>
                     Sport
-                    <select name='sport' value={formValues.sport} onChange={handleInputChange} required={true}>
+                    <select name='sport' value={formValues.sport} onChange={handleInputChange} required={false}>
                         <option value="" disabled>Select Sport</option>
                         {sports.map((sport) => (
                             <option key={sport} value={sport}>{sport}</option>
@@ -126,7 +128,7 @@ const OrganizeForm: React.FC<FormProps> = ({onSubmit}) => {
                 <br/>
                 <label>
                     Sex
-                    <select name='sex' value={formValues.sex} onChange={handleInputChange} required={true}>
+                    <select name='sex' value={formValues.sex} onChange={handleInputChange} required={false}>
                         <option value="" disabled>Select Sex</option>
                         {sexes.map((sex) => (
                             <option key={sex} value={sex}>{sex}</option>
@@ -136,10 +138,10 @@ const OrganizeForm: React.FC<FormProps> = ({onSubmit}) => {
                 <br />
                 <label>
                     Age.s
-                 {formValues.ageGroup.map((ageGroup, index) => (
+                 {formValues.age_group.map((age_group, index) => (
                     <div className = 'parent-ages' key={index}>
                         <div className='ages'>
-                            <select name='age' value={ageGroup} onChange={(e) => handleAgeGroupChange(index, e.target.value)} required={true}>
+                            <select name='age' value={age_group} onChange={(e) => handleAgeGroupChange(index, e.target.value)} required={false}>
                                 <option value="" disabled>Select Age</option>
                                 {ageGroups.map((age) => (
                                     <option key={age} value={age}>{age}</option>
@@ -154,7 +156,7 @@ const OrganizeForm: React.FC<FormProps> = ({onSubmit}) => {
                 <br />
                 <label>
                     Category
-                    <select name='category' value={formValues.category} onChange={handleInputChange} required={true}>
+                    <select name='category' value={formValues.category} onChange={handleInputChange} required={false}>
                         <option value="" disabled>Select Category</option>
                         {categories.map((category) => (
                             <option key={category} value={category}>{category}</option>
@@ -165,43 +167,48 @@ const OrganizeForm: React.FC<FormProps> = ({onSubmit}) => {
                 <label>
                     Start Date
                     <input 
-                        name='startDate' 
+                        name='start_date' 
                         type="date" 
-                        value={formValues.startDate} 
+                        value={formValues.start_date} 
                         onChange={handleInputChange} 
-                        required={true} 
+                        required={false} 
                         min={new Date().toISOString().split('T')[0]} />
                 </label>
                 <br />
                 <label>
                     End Date
                     <input
-                        name='endDate'
+                        name='end_date'
                         type="date"
-                        value={formValues.endDate}
+                        value={formValues.end_date}
                         onChange={handleInputChange}
-                        required={true}
-                        min={formValues.startDate}
+                        required={false}
+                        min={formValues.start_date}
                     />
                 </label>
                 <br />
                 <label>
+                    Number of Teams
+                    <input name='number_of_teams' type='number' value={formValues.number_of_teams} onChange={handleInputChange} required={false} min={0}/>
+                </label>
+                <br />
+                <label>
                     Fees
-                    <input name='fees' type='number' value={formValues.fees} onChange={handleInputChange} required={true} min={0}/>
+                    <input name='fees' type='number' value={formValues.fees} onChange={handleInputChange} required={false} min={0}/>
                 </label>
                 <br />
                     <label>
                     Location
-                    <input type='text' name='location' value={formValues.location} onChange={handleInputChange} required={true} />
+                    <input type='text' name='location' value={formValues.location} onChange={handleInputChange} required={false} />
                 </label>
                 <br/>
                 <label>
                     Description
-                    <textarea name='description' value={formValues.description} onChange={handleInputChange} required={true} />
+                    <textarea name='description' value={formValues.description} onChange={handleInputChange} required={false} />
                 </label>
                 <br />
                 <label className='conditions'>
-                    <input className='conditions' type="checkbox" required={true} />
+                    <input className='conditions' type="checkbox" required={false} />
                     I agree to the terms and conditions
                 </label>
                 <br />

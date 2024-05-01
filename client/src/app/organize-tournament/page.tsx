@@ -1,12 +1,14 @@
 'use client';
 import React from 'react';
 import OrganizeForm from './organize';
-import { Tournament } from './organize';
+import { DefaultService, TournamentCreate } from '@/client';
 
 const Page: React.FC = () => {
 
-    function handleSubmit(data: Tournament){
-        window.alert('MOCKER send to the database' + JSON.stringify(data, null, 2));
+    async function handleSubmit(data: TournamentCreate){
+        const resp = await DefaultService.createTournamentTournamentsPost({requestBody: data})
+        console.log(resp);
+        
     }
 
     return (

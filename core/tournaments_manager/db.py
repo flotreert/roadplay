@@ -1,67 +1,84 @@
-import datetime
-
-import sqlalchemy as sa 
-from sqlalchemy.ext.declarative import declarative_base
-
-DATABASE_URL = 'postgresql://postgres:tournament@localhost:5432/'
-
-Base = declarative_base()
-metadata = Base.metadata
+"""This module contains functions to interact with the database."""
+from core.tournaments_manager import init_db
+from core.tournaments_manager import model
+from core.tournaments_manager import schemas
 
 
-class Tournament(Base):
-    __tablename__ = 'tournaments'
+### TOURNAMENTS ###
 
-    id = sa.Column(sa.Integer, primary_key=True)
-    name = sa.Column(sa.String(255), nullable=True)
-    start_date = sa.Column(sa.String(255), nullable=True)
-    end_date = sa.Column(sa.String(255), nullable=True)
-    location = sa.Column(sa.String(255), nullable=True)
-    description = sa.Column(sa.String(1000))
-    organizer_id = sa.Column(sa.Integer, nullable=True)
-
-    def __repr__(self):
-        return f"Tournament(id={self.id}, name='{self.name}', start_date='{self.start_date}', end_date='{self.end_date}', location='{self.location}', description='{self.description}')"
-    
-    
-
-
-def add_tournament(name, start_date, end_date, location, description, organizer_id):
-    tournament = Tournament(name=name, start_date=start_date, end_date=end_date, location=location, description=description, organizer_id=organizer_id)
-    session = sa.orm.Session(sa.create_engine(DATABASE_URL))
+def add_tournament(tournament: schemas.TournamentCreate) -> None:
+    """Creates tournament."""
+    tournament = model.Tournament(**tournament.model_dump())
+    session = init_db.get_session()
     session.add(tournament)
     session.commit()
     session.close()
     
-def get_tournaments():
-    session = sa.orm.Session(sa.create_engine(DATABASE_URL))
-    tournaments = session.query(Tournament).all()
+def get_tournaments() -> list[model.Tournament]:
+    """Get all tournaments"""
+    session = init_db.get_session()
+    tournaments = session.query(model.Tournament).all()
     session.close()
     return tournaments
 
-def get_tournament_by_id(tournament_id):
-    session = sa.orm.Session(sa.create_engine(DATABASE_URL))
-    tournament = session.query(Tournament).filter(Tournament.id == tournament_id).first()
+def get_tournament_by_id(tournament_id) -> model.Tournament:
+    """Gets tournament by id."""
+    session = init_db.get_session()
+    tournament = session.query(model.Tournament).filter(model.Tournament.id == tournament_id).first()
     session.close()
     return tournament
 
-def update_tournament(tournament_id, name, start_date, end_date, location, description):
-    session = sa.orm.Session(sa.create_engine(DATABASE_URL))
-    tournament = session.query(Tournament).filter(Tournament.id == tournament_id).first()
-    tournament.name = name
-    tournament.start_date = start_date
-    tournament.end_date = end_date
-    tournament.location = location
-    tournament.description = description
+def update_tournament(id: int, tournament: schemas.Tournament) -> None:
+    """Updates tournament."""
+    session = init_db.get_session()
+    existing_tournament = session.query(model.Tournament).filter(model.Tournament.id == id).first()
+    existing_tournament.name = tournament.name if tournament.name else tournament.name
+    existing_tournament.start_date = tournament.start_date if tournament.start_date else tournament.start_date
+    existing_tournament.end_date = tournament.end_date if tournament.end_date else tournament.end_date
+    existing_tournament.location = tournament.location if tournament.location else tournament.location
+    existing_tournament.description = tournament.description if tournament.description else tournament.description
+    existing_tournament.fees = tournament.fees if tournament.fees else tournament.fees
+    existing_tournament.age_group = tournament.age_group if tournament.age_group else tournament.age_group
+    existing_tournament.number_of_teams = tournament.number_of_teams if tournament.number_of_teams else tournament.number_of_teams
     session.commit()
     session.close()
-    
-def delete_tournament(tournament_id):
-    session = sa.orm.Session(sa.create_engine(DATABASE_URL))
-    tournament = session.query(Tournament).filter(Tournament.id == tournament_id).first()
+
+
+#TODO: Delete tournament if organizer deleted
+def delete_tournament(tournament_id) -> None:
+    """Deletes tournament."""
+    session = init_db.get_session()
+    tournament = session.query(model.Tournament).filter(model.Tournament.id == tournament_id).first()
     session.delete(tournament)
     session.commit()
     session.close()
     
 
     
+### TOURNAMENT STATUS ###
+
+
+# TODO: Add team to tournament
+def fill_tournament(tournament_id: int) -> model.Tournament:
+    """Fills tournament."""
+    session = init_db.get_session()
+    tournament = session.query(model.Tournament).filter(model.Tournament.id == tournament_id).first()
+    tournament.current_teams += 1
+    if tournament.current_teams == tournament.number_of_teams:
+        tournament.is_full = True
+    session.commit()
+    session.close()
+    return tournament
+
+def remove_team(tournament_id: int) -> model.Tournament:
+    """Removes team from tournament."""
+    session = init_db.get_session()
+    tournament = session.query(model.Tournament).filter(model.Tournament.id == tournament_id).first()
+    tournament.current_teams -= 1
+    if tournament.current_teams < tournament.number_of_teams:
+        tournament.is_full = False
+    session.commit()
+    session.close()
+    return tournament
+
+
