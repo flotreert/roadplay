@@ -5,7 +5,9 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from core.tournaments_manager import model
+from common import db
+from core.tournaments_manager.model import Tournament
+from auth.user.db import User
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -24,7 +26,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = model.metadata
+target_metadata = db.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

@@ -40,4 +40,7 @@ class TournamentDisplay(pydantic.BaseModel):
     fees: int
     number_of_teams: int
     description: str
-    
+
+class TournamentCreate(TournamentDisplay):
+    """Tournament create model"""
+    organizer_id: int

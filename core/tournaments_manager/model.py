@@ -1,10 +1,8 @@
 import sqlalchemy as sa 
 
-from core.tournaments_manager import init_db
+from common import db
 
-metadata = init_db.Base.metadata
-
-class Tournament(init_db.Base):
+class Tournament(db.Base):
     __tablename__ = 'tournaments'
 
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
