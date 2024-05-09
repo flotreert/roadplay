@@ -1,3 +1,5 @@
+import logging
+
 import fastapi
 from fastapi.middleware.cors import CORSMiddleware
 import sqlalchemy.orm as orm
@@ -6,10 +8,11 @@ from core.tournaments_manager import db as tournaments_db
 from core.tournaments_manager import schemas
 from common import db
 #TODO: move it to common
-from auth import auth as auth_lib
+from auth import router as auth_lib
 
 
-app = fastapi.FastAPI()
+app = fastapi.FastAPI(title='Tournament Manager API', tags=['tournament'])
+app.include_router(auth_lib.router)
 
 origins = [
     "http://localhost.tiangolo.com",
@@ -21,7 +24,7 @@ origins = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    # allow_credentials=True,
+    allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*'],
 )
@@ -40,10 +43,11 @@ def get_tournament(tournament_id: int, sess: orm.Session = fastapi.Depends(db.ge
 
 @app.post('/tournaments')
 def create_tournament(schema: schemas.TournamentDisplay, 
-                      sess: orm.Session = fastapi.Depends(db.get_db),
-                      organizer_id: int = fastapi.Depends(auth_lib.get_current_user)):
+                      organizer_id: int = fastapi.Depends(auth_lib.get_current_active_user),
+                      session: orm.Session = fastapi.Depends(db.get_db)):
+    logging.info(f"Adding tournament: {schema.name} first")
     tournament = schemas.TournamentCreate(organizer_id=organizer_id, **schema.model_dump())
-    tournaments_db.add_tournament(sess, schema)
+    tournaments_db.add_tournament(session, tournament)
     return {'message': 'Tournament created!'}
 
 @app.put('/tournaments/{tournament_id}')

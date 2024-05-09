@@ -1,15 +1,17 @@
 """This module contains functions to interact with the database."""
+import logging
+
 import sqlalchemy as sa
 
 from core.tournaments_manager import model
 from core.tournaments_manager import schemas
-from common import db
 
 
 ### TOURNAMENTS ###
 
 def add_tournament(session: sa.orm.Session, tournament: schemas.TournamentDisplay) -> None:
     """Creates tournament."""
+    logging.info(f"Adding tournament: {tournament.name}")
     tournament = model.Tournament(**tournament.model_dump())
     session.add(tournament)
     session.commit()

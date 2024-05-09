@@ -2,10 +2,8 @@ from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 import fastapi
-from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-import http
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 import sqlalchemy.orm as orm
@@ -31,26 +29,11 @@ fake_users_db = {
 }
 
 
-
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token/login")
 
-app = FastAPI()
-
-origins = [
-    "http://localhost",
-    "http://localhost:3000",
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=['*'],
-    allow_headers=['*'],
-)
-
+router = fastapi.APIRouter(tags=['auth'])
 
 
 def verify_password(plain_password, hashed_password):
@@ -87,7 +70,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+async def get_current_user(session, token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -101,7 +84,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         token_data = schemas.TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = get_user(fake_users_db, username=token_data.username)
+    user = db_user.get_user_by_username(session, username=token_data.username)
     if user is None:
         raise credentials_exception
     return user
@@ -115,7 +98,7 @@ async def get_current_active_user(
     return current_user
 
 
-@app.post("/token")
+@router.post("/token/login", response_model=schemas.Token, tags=["auth"])
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     session: orm.Session = Depends(db.get_db),
@@ -133,28 +116,14 @@ async def login_for_access_token(
     )
     return schemas.Token(access_token=access_token, token_type="bearer")
 
-
-@app.get("/users/me/", response_model=schemas.User)
-async def read_users_me(
-    current_user: Annotated[schemas.User, Depends(get_current_active_user)],
-):
-    return current_user
-
-
-@app.get("/users/me/items/")
-async def read_own_items(
-    current_user: Annotated[schemas.User, Depends(get_current_active_user)],
+@router.post('/token/refresh', response_model=dict)
+async def refresh_token(
+    current_user: db_user.User = fastapi.Depends(get_current_active_user)
 ):  
-    return [{"item_id": "Foo", "owner": current_user.username}]
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": current_user.username}, expires_delta=access_token_expires
+    )
+    return {'access_token': access_token, 'token_type': 'bearer'}
 
 
-
-@app.get("/{user_id}")
-def get_user(user_id: int, sess: orm.Session = fastapi.Depends(db.get_db)):
-    return db_user.get_user(sess, user_id) 
-
-@app.post("/", status_code=http.HTTPStatus.CREATED.value)
-def create_user(user: schemas.CreateUserModel, sess: orm.Session = fastapi.Depends(db.get_db)):
-    user = db_user.User(hashed_password=get_password_hash(user.password), email=user.email, username=user.username) 
-    db_user.create(sess, user)
-    return {"message": "User created successfully"}
