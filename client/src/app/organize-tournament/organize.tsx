@@ -142,8 +142,8 @@ const OrganizeForm: React.FC<FormProps> = () => {
                 <br />
                 <label>
                     Age.s
-                 {formValues.age_group.map((age_group, index) => (
-                    <div className = 'parent-ages' key={index}>
+                {formValues.age_group.map((age_group: string, index: number) => (
+                    <div className='parent-ages' key={index}>
                         <div className='ages'>
                             <select name='age' value={age_group} onChange={(e) => handleAgeGroupChange(index, e.target.value)} required={false}>
                                 <option value="" disabled>Select Age</option>

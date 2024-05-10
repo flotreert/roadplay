@@ -78,7 +78,7 @@ async def get_current_user(session, token: Annotated[str, Depends(oauth2_scheme)
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
+        username: str = payload.get("username")
         if username is None:
             raise credentials_exception
         token_data = schemas.TokenData(username=username)
@@ -112,7 +112,8 @@ async def login_for_access_token(
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
+        data={'user': {"user": user.username, 'id': user.id}},
+        expires_delta=access_token_expires
     )
     return schemas.Token(access_token=access_token, token_type="bearer")
 
@@ -122,7 +123,8 @@ async def refresh_token(
 ):  
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": current_user.username}, expires_delta=access_token_expires
+        data={'user': {"user": current_user.username, 'id': current_user.id}},
+        expires_delta=access_token_expires
     )
     return {'access_token': access_token, 'token_type': 'bearer'}
 

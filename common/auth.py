@@ -1,8 +1,15 @@
 import uuid
 
 import fastapi
+from fastapi import security
 import jwt
  
+oauth2_scheme = security.OAuth2PasswordBearer(tokenUrl='token/login')
+bearer_scheme = security.HTTPBearer()
+
+SECRET_KEY = "09d25e094fab6ca2556c818166b7a1234b93f7099f6f0f4caa6cf63b88e8d3e7"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 def get_user_id_from_token(
     token: str,
@@ -34,22 +41,16 @@ def get_user_id_from_token(
     try:
         payload = jwt.decode(
             token,
-            auth_settings.auth_token_secret_key,
-            algorithms=[auth_settings.encrypt_algo],
+            SECRET_KEY,
+            algorithms=[ALGORITHM],
         )
-        if type_ == uuid.UUID:
-            user_id = payload.get('sub', None)
-            if user_id is None:
-                raise credentials_exception
-            user_id = uuid.UUID(user_id)
+        user: dict = payload.get('user', None)
+        if user is not None:
+            user_id = user.get('id', None)
+        if user is None or user_id is None:
+            raise credentials_exception
         else:
-            user: dict = payload.get('user', None)
-            if user is not None:
-                user_id = user.get('id', None)
-            if user is None or user_id is None:
-                raise credentials_exception
-            else:
-                user_id = int(user_id)
+            user_id = int(user_id)
     except jwt.InvalidTokenError as e:
         raise credentials_exception from e
     return user_id

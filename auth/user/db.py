@@ -22,6 +22,7 @@ def get_users(sess: sa.orm.Session) -> list[User]:
     return sess.query(User).all()
 
 def create(sess: sa.orm.Session, user: User) -> User:
+    # TODO: handle already existing user/mail/username
     sess.add(user)
     sess.commit()
     sess.refresh(user)
