@@ -70,6 +70,7 @@ const TournamentTable: React.FC = () => {
 
 
     const handleRowClick = (item: Tournament) => {
+        // TODO: isLoading 
         window.location.href = `/tournament/${item.id}`;
     };
 

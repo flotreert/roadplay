@@ -1,0 +1,28 @@
+version: '3.11'
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - 8000:8080
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - auth
+      - tournaments_manager
+
+  auth:
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0
+    volumes:
+      - .:/app
+    ports:
+      - 8008:8000
+
+  tournaments_manager:
+    build: .
+    command: uvicorn app.main:app --host
+    volumes:
+      - .:/app
+    ports:
+      - 8009:8000

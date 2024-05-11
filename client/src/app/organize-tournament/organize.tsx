@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import ProgressBar from '../components/progressBar';
-import { TournamentCreate} from '@/client';
+import { TournamentDisplay} from '@/client';
 import {useCreateTournament} from '../services/tournaments.service';
 
 import './organize.css';
@@ -14,11 +14,9 @@ const sexes = ['Male', 'Female', 'Mixed'];
 
 
 
-interface FormProps {
-    // onSubmit: (data: TournamentCreate) => void;
-  }
+interface FormProps {}
 
-const calculateProgress = (values: TournamentCreate): number => {
+const calculateProgress = (values: TournamentDisplay): number => {
     const { name, sport, sex, age_group, category, start_date, end_date, fees, location, description } = values;
     const totalFields = Object.keys(values).length;
     let filledFields = 0;
@@ -30,7 +28,7 @@ const calculateProgress = (values: TournamentCreate): number => {
     if (category.trim() !== '') filledFields++;
     if (start_date.trim() !== '') filledFields++;
     if (end_date.trim() !== '') filledFields++;
-    if (fees > 0) filledFields++;
+    if (fees >= 0) filledFields++;
     if (location.trim() !== '') filledFields++;
     if (description.trim() !== '') filledFields++;
     if (values.number_of_teams > 0) filledFields++;
@@ -42,7 +40,7 @@ const calculateProgress = (values: TournamentCreate): number => {
 const OrganizeForm: React.FC<FormProps> = () => {
     const [progressValue, setProgressValue] = useState<number>(0);
     //TODO: Change Id from the DB
-    const [formValues, setFormValues] = useState<TournamentCreate>({
+    const [formValues, setFormValues] = useState<TournamentDisplay>({
         name: '',
         sport: '', 
         sex: '',
@@ -50,11 +48,10 @@ const OrganizeForm: React.FC<FormProps> = () => {
         category: '',
         start_date: '',
         end_date: '',
-        fees: 0,
+        fees: -1,
         location: '',
         description: '',
         number_of_teams: 0,
-        organizer_id: 1,
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
