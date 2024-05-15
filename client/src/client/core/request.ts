@@ -6,9 +6,7 @@ import type { ApiRequestOptions } from './ApiRequestOptions';
 import type { ApiResult } from './ApiResult';
 import { CancelablePromise } from './CancelablePromise';
 import type { OnCancel } from './CancelablePromise';
-import type { OpenAPIConfig } from './OpenAPI';
-
-axios.defaults.baseURL = 'http://localhost:8000';
+import type { Client } from './ClientApi';
 
 export const isString = (value: unknown): value is string => {
 	return typeof value === 'string';
@@ -67,7 +65,7 @@ export const getQueryString = (params: Record<string, unknown>): string => {
 	return qs.length ? `?${qs.join('&')}` : '';
 };
 
-const getUrl = (config: OpenAPIConfig, options: ApiRequestOptions): string => {
+const getUrl = (config: Client, options: ApiRequestOptions): string => {
 	const encoder = config.ENCODE_PATH || encodeURI;
 
 	const path = options.url
@@ -119,7 +117,7 @@ export const resolve = async <T>(options: ApiRequestOptions, resolver?: T | Reso
 	return resolver;
 };
 
-export const getHeaders = async (config: OpenAPIConfig, options: ApiRequestOptions): Promise<Record<string, string>> => {
+export const getHeaders = async (config: Client, options: ApiRequestOptions): Promise<Record<string, string>> => {
 	const [token, username, password, additionalHeaders] = await Promise.all([
 		resolve(options, config.TOKEN),
 		resolve(options, config.USERNAME),
@@ -174,7 +172,7 @@ export const getRequestBody = (options: ApiRequestOptions): unknown => {
 };
 
 export const sendRequest = async <T>(
-	config: OpenAPIConfig,
+	config: Client,
 	options: ApiRequestOptions,
 	url: string,
 	body: unknown,
@@ -303,7 +301,7 @@ export const catchErrorCodes = (options: ApiRequestOptions, result: ApiResult): 
  * @returns CancelablePromise<T>
  * @throws ApiError
  */
-export const request = <T>(config: OpenAPIConfig, options: ApiRequestOptions, axiosClient: AxiosInstance = axios): CancelablePromise<T> => {
+export const request = <T>(config: Client, options: ApiRequestOptions, axiosClient: AxiosInstance = axios): CancelablePromise<T> => {
 	return new CancelablePromise(async (resolve, reject, onCancel) => {
 		try {
 			const url = getUrl(config, options);

@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import ProgressBar from '../components/progressBar';
-import { TournamentDisplay} from '@/client';
+import { TournamentDisplay } from '@/client/types/tournaments';
 import {useCreateTournament} from '../services/tournaments.service';
 
 import './organize.css';

@@ -12,7 +12,7 @@ services:
       - tournaments_manager
 
   auth:
-    build: .
+    build: ./auth
     command: uvicorn app.main:app --host 0.0.0.0
     volumes:
       - .:/app
@@ -20,7 +20,7 @@ services:
       - 8008:8000
 
   tournaments_manager:
-    build: .
+    build: ./core/tournaments_manager
     command: uvicorn app.main:app --host
     volumes:
       - .:/app

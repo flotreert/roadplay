@@ -44,3 +44,7 @@ next-env.d.ts
 
 #log
 *.log
+
+
+# generated files
+/client/src/client/generated

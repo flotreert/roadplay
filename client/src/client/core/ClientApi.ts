@@ -24,7 +24,7 @@ export class Interceptors<T> {
   }
 }
 
-export type OpenAPIConfig = {
+export type Client = {
 	BASE: string;
 	CREDENTIALS: 'include' | 'omit' | 'same-origin';
 	ENCODE_PATH?: ((path: string) => string) | undefined;
@@ -40,8 +40,9 @@ export type OpenAPIConfig = {
 	};
 };
 
-export const OpenAPI: OpenAPIConfig = {
-	BASE: '',
+// TODO: check the base
+export const ClientApi: Client = {
+	BASE: 'http://localhost:8080/api',
 	CREDENTIALS: 'include',
 	ENCODE_PATH: undefined,
 	HEADERS: undefined,
