@@ -1,11 +1,11 @@
-FROM python:3.12.3-slim-bullseye 
+FROM python:3.11.3-slim-bullseye 
 
 WORKDIR /app
 
-COPY auth/requirements.txt requirements.txt
+COPY requirements.txt requirements.txt
 RUN python3.11 -m pip install -r requirements.txt
 
-COPY /auth .
+COPY ./ .
 
 
 CMD ["uvicorn", "auth.main:app", "--reload", "--port", "8101"]

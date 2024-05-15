@@ -8,11 +8,15 @@ from core.tournaments_manager import db as tournaments_db
 from core.tournaments_manager import schemas
 from common import db
 #TODO: move it to common
-from auth import router as auth_router
 from common import auth as auth_lib
 
 
-app = fastapi.FastAPI(title='Tournament Manager API', tags=['tournament'])
+app = fastapi.FastAPI(title='Tournament Manager API',
+                      tags=['tournament'], 
+                      prefix='/api/tournaments', 
+                      openapi_prefix='/api/tournaments',
+                      docs_prefix='/api/tournaments',
+                      )
 
 origins = [
     "http://localhost.tiangolo.com",
