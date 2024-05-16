@@ -1,9 +1,8 @@
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
-
-class User(Base):
+from common import db 
+class User(db.Base):
     __tablename__ = 'users'
 
     id = sa.Column(sa.Integer, primary_key=True)
@@ -14,4 +13,4 @@ class User(Base):
     role = sa.Column(sa.String(50), default='player')
 
     def __repr__(self):
-        return f"<User(username='{self.username}', email='{self.email}')>"
+        return f'<User(username={self.username}, email={self.email})>'

@@ -4,6 +4,7 @@ from common import db
 
 
 class User(db.Base):
+    """Auth user model"""	
     __tablename__ = 'auth_data'
 
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
