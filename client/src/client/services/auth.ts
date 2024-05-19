@@ -28,17 +28,13 @@ export class AuthService {
     /**
      * Refresh Token
      * @param data The data for the request.
-     * @param data.session
      * @returns unknown Successful Response
      * @throws ApiError
      */
-    public static refreshTokenTokenRefreshPost(data: $OpenApiTs['/token/refresh']['post']['req']): CancelablePromise<$OpenApiTs['/token/refresh']['post']['res'][200]> {
+    public static refreshTokenTokenRefreshPost(): CancelablePromise<$OpenApiTs['/token/refresh']['post']['res'][200]> {
         return __request(ClientApi, {
             method: 'POST',
             url: '/token/refresh',
-            query: {
-                session: data.session
-            },
             errors: {
                 422: 'Validation Error'
             }
@@ -48,17 +44,13 @@ export class AuthService {
     /**
      * Read Users Me
      * @param data The data for the request.
-     * @param data.session
      * @returns User Successful Response
      * @throws ApiError
      */
-    public static readUsersMeUsersMeGet(data: $OpenApiTs['/users/me/']['get']['req']): CancelablePromise<$OpenApiTs['/users/me/']['get']['res'][200]> {
+    public static readUsersMeUsersMeGet(): CancelablePromise<$OpenApiTs['/users/me/']['get']['res'][200]> {
         return __request(ClientApi, {
             method: 'GET',
             url: '/users/me/',
-            query: {
-                session: data.session
-            },
             errors: {
                 422: 'Validation Error'
             }
@@ -68,7 +60,6 @@ export class AuthService {
     /**
      * Read Own Items
      * @param data The data for the request.
-     * @param data.session
      * @returns unknown Successful Response
      * @throws ApiError
      */

@@ -42,7 +42,7 @@ export type Client = {
 
 // TODO: check the base
 export const ClientApi: Client = {
-	BASE: 'http://localhost:8080/api',
+	BASE: 'http://localhost:8080',
 	CREDENTIALS: 'include',
 	ENCODE_PATH: undefined,
 	HEADERS: undefined,
@@ -56,3 +56,4 @@ export const ClientApi: Client = {
 		response: new Interceptors(),
 	},
 };
+
