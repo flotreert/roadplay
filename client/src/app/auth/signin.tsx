@@ -27,8 +27,6 @@ const SignInForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Add your sign-in logic here
-        window.alert(`logging with Email: ${username}, ' Password:, ${password}`);
         login({username: username, password: password});
         setIsSignin(true);
     };

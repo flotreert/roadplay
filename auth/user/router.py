@@ -1,7 +1,6 @@
 from typing import Annotated
 
-import fastapi 
-from fastapi.middleware.cors import CORSMiddleware
+import fastapi
 import http
 import sqlalchemy.orm as orm
 

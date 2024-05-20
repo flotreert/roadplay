@@ -6,8 +6,8 @@ const actions = {
         mutationFn: (data: {username: string, password: string}) => AuthService.loginForAccessTokenTokenLoginPost({formData: data}),
         mutationKey: ['login', 'login'],
         onSuccess: (data: any) => {
-            console.log('Logged in successfully');
-            localStorage.setItem('user', JSON.stringify(data));
+            console.log('Logged in successfully with token: ' + data.access_token);
+            localStorage.setItem('user', data.access_token);
         },
         onError: (error: any) => {
             window.alert('Error logging in' + error);
@@ -18,7 +18,7 @@ const actions = {
         mutationKey: ['refreshToken', 'refresh'],
         onSuccess: (data: any) => {
             console.log('Token refreshed successfully');
-            localStorage.setItem('user', JSON.stringify(data));
+            localStorage.setItem('user', data.access_token);
         },
         onError: (error: any) => {
             window.alert('Error refreshing token' + error);
@@ -29,7 +29,7 @@ const actions = {
         mutationKey: ['signUp', 'signUp'],
         onSuccess: (data: any) => {
             console.log('User created successfully');
-            localStorage.setItem('user', JSON.stringify(data));
+            localStorage.setItem('user', data.access_token);
         },
         onError: (error: any) => {
             window.alert('Error creating user' + error);
@@ -50,16 +50,3 @@ export const useSignUp = () => {
     return useMutation(actions.signUp());
 }
 
-
-export default function authHeader() {
-    const userStr = localStorage.getItem("user");
-    let user = null;
-    if (userStr)
-      user = JSON.parse(userStr);
-  
-    if (user && user.accessToken) {
-      return { Authorization: 'Bearer ' + user.accessToken };
-    } else {
-      return { Authorization: '' };
-    }
-  }
