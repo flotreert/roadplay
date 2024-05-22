@@ -8,17 +8,15 @@ from core.tournaments_manager import schemas
 from common import db as db_lib
 from common import auth as auth_lib
 
-
-app = fastapi.FastAPI(title='Tournament Manager API',
-                      tags=['tournament'],
-                      prefix='/api/tournaments',
-                      openapi_prefix='/api/tournaments',
-                      docs_prefix='/api/tournaments',
-                      )
+app = fastapi.FastAPI(
+    title='Tournament Manager API',
+    tags=['tournament'],
+    prefix='/api/tournaments',
+    openapi_prefix='/api/tournaments',
+    docs_prefix='/api/tournaments',
+)
 
 origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
     "http://localhost",
     "http://localhost:3000",
 ]
@@ -31,6 +29,7 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
+
 @app.get('/')
 def read_root():
     """Root endpoint
@@ -39,8 +38,10 @@ def read_root():
     """
     return {'message': 'Welcome to the Tournament Manager API!'}
 
+
 @app.get('/tournaments')
-def get_tournaments(sess: orm.Session = fastapi.Depends(db_lib.get_db)) -> list[schemas.Tournament]:
+def get_tournaments(sess: orm.Session = fastapi.Depends(
+    db_lib.get_db)) -> list[schemas.Tournament]:
     """Get all tournaments
     Args:
         sess (orm.Session): Database session
@@ -48,6 +49,7 @@ def get_tournaments(sess: orm.Session = fastapi.Depends(db_lib.get_db)) -> list[
         list[schemas.Tournament]: List of tournaments
     """
     return tournaments_db.get_tournaments(session=sess)
+
 
 @app.get('/tournaments/{tournament_id}')
 def get_tournament(
@@ -63,11 +65,13 @@ def get_tournament(
     """
     return tournaments_db.get_tournament_by_id(db, tournament_id)
 
+
 @app.post('/tournaments')
-def create_tournament(schema: schemas.TournamentDisplay,
-                      db: orm.Session = fastapi.Depends(db_lib.get_db),
-                      organizer_id: int = fastapi.Depends(auth_lib.get_user_id),
-                      ):
+def create_tournament(
+        schema: schemas.TournamentDisplay,
+        db: orm.Session = fastapi.Depends(db_lib.get_db),
+        organizer_id: int = fastapi.Depends(auth_lib.get_user_id),
+):
     """Create a new tournament
     Args:
         schema (schemas.TournamentDisplay): Tournament data
@@ -76,16 +80,17 @@ def create_tournament(schema: schemas.TournamentDisplay,
     Returns:
         dict: Success message
     """
-    tournament = schemas.TournamentCreate(organizer_id=organizer_id, **schema.model_dump())
+    tournament = schemas.TournamentCreate(organizer_id=organizer_id,
+                                          **schema.model_dump())
     tournaments_db.add_tournament(db, tournament)
     return {'message': 'Tournament created!'}
 
+
 @app.put('/tournaments/{tournament_id}')
-def update_tournament(
-        tournament_id: int,
-        schema: schemas.TournamentDisplay,
-        db: orm.Session = fastapi.Depends(db_lib.get_db),
-):
+def update_tournament(tournament_id: int,
+                      schema: schemas.TournamentDisplay,
+                      db: orm.Session = fastapi.Depends(db_lib.get_db),
+                      user_id: int = fastapi.Depends(auth_lib.get_user_id)):
     """Update a tournament
     Args:
         tournament_id (int): Tournament ID
@@ -94,11 +99,16 @@ def update_tournament(
     tournaments_db.update_tournament(session=db,
                                      tournament_id=tournament_id,
                                      tournament=schema,
-                                    )
+                                     user_id=user_id)
     return {'message': f'Tournament {tournament_id} updated!'}
 
+
 @app.delete('/tournaments/{tournament_id}')
-def delete_tournament(tournament_id: int, db: orm.Session = fastapi.Depends(db_lib.get_db)):
+def delete_tournament(
+        tournament_id: int,
+        db: orm.Session = fastapi.Depends(db_lib.get_db),
+        user_id: int = fastapi.Depends(auth_lib.get_user_id),
+):
     """Delete a tournament
     Args:
         tournament_id (int): Tournament ID
@@ -106,10 +116,18 @@ def delete_tournament(tournament_id: int, db: orm.Session = fastapi.Depends(db_l
     Returns:
         dict: Success message
     """
-    tournaments_db.delete_tournament(db, tournament_id)
+    tournaments_db.delete_tournament(
+        db,
+        tournament_id,
+        user_id=user_id,
+    )
     return {'message': 'Tournament deleted!'}
 
-@app.post('/tournaments/{tournament_id}/fill')
+
+### Tournament status ###
+
+
+@app.put('/tournaments/{tournament_id}/fill')
 def fill_tournament(
         tournament_id: int,
         user_id: int = fastapi.Depends(auth_lib.get_user_id),
@@ -127,9 +145,10 @@ def fill_tournament(
         tournament_id,
         user_id=user_id,
     )
-    return {'message': f'Tournament teams {user_id} filled!'}
+    return {'message': f'Tournament {tournament_id} teams {user_id} filled!'}
 
-@app.post('/tournaments/{tournament_id}/remove_team')
+
+@app.put('/tournaments/{tournament_id}/remove_team')
 def remove_team(
         tournament_id: int,
         user_id: int = fastapi.Depends(auth_lib.get_user_id),
@@ -142,10 +161,12 @@ def remove_team(
     Returns:
         dict: Success message
     """
-    #TODO: Add user_id / team_id
-    del user_id
-    tournament = tournaments_db.remove_team(db, tournament_id)
+    #TODO: Get team from user_id
+    tournament = tournaments_db.remove_team(db, tournament_id, user_id)
+    if tournament is None:
+        return {'message': f'Error user {user_id} cannot be removed'}
     return {
-        'message': (f'Team removed from tournament {tournament.name}! '
-                    f'{tournament.current_teams}/{tournament.max_teams}')
+        'message':
+        (f'Participant {user_id} removed from tournament {tournament_id}! '
+         f'{tournament.current_teams}/{tournament.max_teams}')
     }

@@ -1,13 +1,13 @@
 FROM python:3.11.3-slim-bullseye 
+RUN alias python3.11=python3
+RUN alias python3=python
 
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
-RUN python3.11 -m pip install -r requirements.txt
+COPY core/tournaments_manager /app/tournaments_manager
+COPY core/tournaments_manager/requirements.txt requirements.txt
+RUN python3 -m pip install -r requirements.txt
 
-COPY ./ .
-
-
-CMD ["uvicorn", "core.tournaments_manager.app:app", "--reload", "--port", "8100"]
-# CMD ["uvicorn", "core.tournaments_manager.app:app", "--port", "8100"]
+COPY common/. /common/.
+RUN python3 -m pip install -r /common/requirements.txt
 

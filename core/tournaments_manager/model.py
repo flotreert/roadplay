@@ -1,8 +1,10 @@
+"""Model for Tournaments"""
 import sqlalchemy as sa 
 
 from common import db
 
 class Tournament(db.Base):
+    """Tournament model"""
     __tablename__ = 'tournaments'
 
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
@@ -19,9 +21,10 @@ class Tournament(db.Base):
     sex = sa.Column(sa.String(255), nullable=True)
     fees = sa.Column(sa.Integer, nullable=True)
     number_of_teams = sa.Column(sa.Integer, nullable=True)
-    current_teams = sa.Column(sa.Integer, default=0)
+    participants = sa.Column(sa.ARRAY(sa.Integer), nullable=True, default=[])
     is_full = sa.Column(sa.Boolean, default=False)
     description = sa.Column(sa.String(1000))
+
     
 
     def __repr__(self):

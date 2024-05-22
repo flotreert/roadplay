@@ -1,16 +1,19 @@
+"""Model for Users"""
 import sqlalchemy as sa
-from sqlalchemy.ext.declarative import declarative_base
 
-from common import db 
+from common import db
+
+
 class User(db.Base):
+    """User model"""
     __tablename__ = 'users'
 
     id = sa.Column(sa.Integer, primary_key=True)
     username = sa.Column(sa.String(50), unique=True)
-    password = sa.Column(sa.String(50), nullable=False)
-    password_hash = sa.Column(sa.String(128))
-    email = sa.Column(sa.String(100))
-    role = sa.Column(sa.String(50), default='player')
+    past_tournaments = sa.Column(sa.ARRAY(sa.Integer), nullable=True)
+    current_tournaments = sa.Column(sa.ARRAY(sa.Integer), nullable=True)
+    futur_tournaments = sa.Column(sa.ARRAY(sa.Integer), nullable=True)
+    organizer_tournaments = sa.Column(sa.ARRAY(sa.Integer), nullable=True)
 
     def __repr__(self):
-        return f'<User(username={self.username}, email={self.email})>'
+        return f'<user={self.username}>'

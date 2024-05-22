@@ -1,4 +1,6 @@
 """This module contains functions to interact with the database."""
+import logging
+
 import sqlalchemy as sa
 
 from core.tournaments_manager import model
@@ -7,8 +9,10 @@ from core.tournaments_manager import schemas
 ### TOURNAMENTS ###
 
 
-def add_tournament(session: sa.orm.Session,
-                   tournament: schemas.TournamentDisplay) -> None:
+def add_tournament(
+    session: sa.orm.Session,
+    tournament: schemas.TournamentDisplay,
+) -> None:
     """Creates tournament."""
     tournament = model.Tournament(**tournament.model_dump())
     session.add(tournament)
@@ -32,11 +36,18 @@ def get_tournament_by_id(session: sa.orm.Session,
     return tournament
 
 
-def update_tournament(session: sa.orm.Session, tournament_id: int,
-                      tournament: schemas.Tournament) -> None:
+def update_tournament(
+    session: sa.orm.Session,
+    tournament_id: int,
+    tournament: schemas.Tournament,
+    user_id: int,
+) -> None:
     """Updates tournament."""
     existing_tournament = (session.query(
         model.Tournament).filter(model.Tournament.id == tournament_id).first())
+    if user_id != existing_tournament.organizer_id:
+        logging.warning('User %s is not the organizer of %s', user_id,
+                        tournament_id)
     existing_tournament.name = tournament.name if tournament.name else tournament.name
     existing_tournament.start_date = (tournament.start_date
                                       if tournament.start_date else
@@ -59,10 +70,14 @@ def update_tournament(session: sa.orm.Session, tournament_id: int,
 
 
 #TODO: Delete tournament if organizer deleted
-def delete_tournament(session: sa.orm.Session, tournament_id) -> None:
+def delete_tournament(session: sa.orm.Session, tournament_id: int,
+                      user_id: int) -> None:
     """Deletes tournament."""
     tournament = session.query(
         model.Tournament).filter(model.Tournament.id == tournament_id).first()
+    if user_id != tournament.organizer_id:
+        logging.warning('User %s is not the organizer')
+        return None
     session.delete(tournament)
     session.commit()
     session.close()
@@ -73,29 +88,41 @@ def delete_tournament(session: sa.orm.Session, tournament_id) -> None:
 
 # TODO: Add team to tournament
 def fill_tournament(session: sa.orm.Session, tournament_id: int,
-                    user_id: int) -> model.Tournament:
+                    user_id: int) -> model.Tournament | None:
     """Fills tournament."""
-    #TODO: Add user_id / team_id
-    del user_id
     tournament = session.query(
         model.Tournament).filter(model.Tournament.id == tournament_id).first()
     if tournament.is_full:
-        return tournament
-    tournament.current_teams += 1
-    if tournament.current_teams == tournament.number_of_teams:
+        logging.warning('Tournament %s is full', tournament_id)
+        return None
+    if user_id in tournament.participants:
+        logging.warning('User/Team %s already in tournament %s', user_id,
+                        tournament_id)
+        return None
+
+    tournament.participants.append(user_id)
+    if len(tournament.participants) == tournament.number_of_teams:
         tournament.is_full = True
     session.commit()
     session.close()
     return tournament
 
-
-def remove_team(session: sa.orm.Session,
-                tournament_id: int) -> model.Tournament:
+# TODO: error message if tournament doesnt exist, check error for user not in tournament
+def remove_team(
+    session: sa.orm.Session,
+    tournament_id: int,
+    user_id: str | None = None,
+) -> model.Tournament | None:
     """Removes team from tournament."""
     tournament = (session.query(
         model.Tournament).filter(model.Tournament.id == tournament_id).first())
-    tournament.current_teams -= 1
-    if tournament.current_teams < tournament.number_of_teams:
+    if user_id not in tournament.participants:
+        logging.warning('User/team %s not in tournament %s', user_id,
+                        tournament_id)
+        return None
+
+    tournament.participants.remove(user_id)
+    if len(tournament.participants) < tournament.number_of_teams:
         tournament.is_full = False
     session.commit()
     session.close()
