@@ -23,6 +23,7 @@ def add_tournament(
 def get_tournaments(session: sa.orm.Session) -> list[model.Tournament]:
     """Get all tournaments"""
     tournaments = session.query(model.Tournament).all()
+    logging.info('%s', tournaments)
     session.close()
     return tournaments
 
@@ -39,34 +40,42 @@ def get_tournament_by_id(session: sa.orm.Session,
 def update_tournament(
     session: sa.orm.Session,
     tournament_id: int,
-    tournament: schemas.Tournament,
+    new_tournament: schemas.Tournament,
     user_id: int,
-) -> None:
+) -> model.Tournament | None:
     """Updates tournament."""
-    existing_tournament = (session.query(
+    old_tournament = (session.query(
         model.Tournament).filter(model.Tournament.id == tournament_id).first())
-    if user_id != existing_tournament.organizer_id:
+    if not old_tournament:
+        logging.error('Tournament %s not found', tournament_id)
+        return None
+    if user_id != old_tournament.organizer_id:
         logging.warning('User %s is not the organizer of %s', user_id,
                         tournament_id)
-    existing_tournament.name = tournament.name if tournament.name else tournament.name
-    existing_tournament.start_date = (tournament.start_date
-                                      if tournament.start_date else
-                                      tournament.start_date)
-    existing_tournament.end_date = (tournament.end_date if tournament.end_date
-                                    else tournament.end_date)
-    existing_tournament.location = (tournament.location if tournament.location
-                                    else tournament.location)
-    existing_tournament.description = (tournament.description
-                                       if tournament.description else
-                                       tournament.description)
-    existing_tournament.fees = tournament.fees if tournament.fees else tournament.fees
-    existing_tournament.age_group = (
-        tournament.age_group if tournament.age_group else tournament.age_group)
-    existing_tournament.number_of_teams = (tournament.number_of_teams
-                                           if tournament.number_of_teams else
-                                           tournament.number_of_teams)
+        return None
+    old_tournament.name = new_tournament.name if new_tournament.name else old_tournament.name
+    old_tournament.start_date = (new_tournament.start_date
+                                 if new_tournament.start_date else
+                                 old_tournament.start_date)
+    old_tournament.end_date = (new_tournament.end_date
+                               if new_tournament.end_date else
+                               old_tournament.end_date)
+    old_tournament.location = (new_tournament.location
+                               if new_tournament.location else
+                               old_tournament.location)
+    old_tournament.description = (new_tournament.description
+                                  if new_tournament.description else
+                                  old_tournament.description)
+    old_tournament.fees = new_tournament.fees if new_tournament.fees else old_tournament.fees
+    old_tournament.age_group = (new_tournament.age_group
+                                if new_tournament.age_group else
+                                old_tournament.age_group)
+    old_tournament.number_of_teams = (new_tournament.number_of_teams
+                                      if new_tournament.number_of_teams else
+                                      old_tournament.number_of_teams)
     session.commit()
     session.close()
+    return old_tournament
 
 
 #TODO: Delete tournament if organizer deleted
@@ -75,6 +84,9 @@ def delete_tournament(session: sa.orm.Session, tournament_id: int,
     """Deletes tournament."""
     tournament = session.query(
         model.Tournament).filter(model.Tournament.id == tournament_id).first()
+    if not tournament:
+        logging.error('Tournament %s not found', tournament_id)
+        return None
     if user_id != tournament.organizer_id:
         logging.warning('User %s is not the organizer')
         return None
@@ -87,11 +99,17 @@ def delete_tournament(session: sa.orm.Session, tournament_id: int,
 
 
 # TODO: Add team to tournament
-def fill_tournament(session: sa.orm.Session, tournament_id: int,
-                    user_id: int) -> model.Tournament | None:
+def fill_tournament(
+    session: sa.orm.Session,
+    tournament_id: int,
+    user_id: int,
+) -> model.Tournament | None:
     """Fills tournament."""
     tournament = session.query(
         model.Tournament).filter(model.Tournament.id == tournament_id).first()
+    if not tournament:
+        logging.error('Tournament %s not found', tournament_id)
+        return None
     if tournament.is_full:
         logging.warning('Tournament %s is full', tournament_id)
         return None
@@ -99,15 +117,23 @@ def fill_tournament(session: sa.orm.Session, tournament_id: int,
         logging.warning('User/Team %s already in tournament %s', user_id,
                         tournament_id)
         return None
-
-    tournament.participants.append(user_id)
+    
+    # TODO: create a Sqlachemy mutable array
+    participants = list(tournament.participants)
+    participants.append(user_id)
+    tournament.participants = participants.copy()
     if len(tournament.participants) == tournament.number_of_teams:
         tournament.is_full = True
     session.commit()
     session.close()
+    logging.error(
+        '%s',
+        session.query(model.Tournament).filter(
+            model.Tournament.id == tournament_id).first().participants)
     return tournament
 
-# TODO: error message if tournament doesnt exist, check error for user not in tournament
+
+# TODO: check error for user not in tournament
 def remove_team(
     session: sa.orm.Session,
     tournament_id: int,
@@ -116,12 +142,18 @@ def remove_team(
     """Removes team from tournament."""
     tournament = (session.query(
         model.Tournament).filter(model.Tournament.id == tournament_id).first())
+    if not tournament:
+        logging.error('Tournament %s not found', tournament_id)
+        return None
     if user_id not in tournament.participants:
         logging.warning('User/team %s not in tournament %s', user_id,
                         tournament_id)
         return None
-
-    tournament.participants.remove(user_id)
+    
+    # TODO: create a Sqlachemy mutable array
+    participants = list(tournament.participants)
+    participants.remove(user_id)
+    tournament.participants = participants.copy()
     if len(tournament.participants) < tournament.number_of_teams:
         tournament.is_full = False
     session.commit()

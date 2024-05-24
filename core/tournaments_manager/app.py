@@ -40,8 +40,9 @@ def read_root():
 
 
 @app.get('/tournaments')
-def get_tournaments(sess: orm.Session = fastapi.Depends(
-    db_lib.get_db)) -> list[schemas.Tournament]:
+def get_tournaments(
+    sess: orm.Session = fastapi.Depends(db_lib.get_db),
+) -> list[schemas.Tournament]:
     """Get all tournaments
     Args:
         sess (orm.Session): Database session
@@ -53,9 +54,9 @@ def get_tournaments(sess: orm.Session = fastapi.Depends(
 
 @app.get('/tournaments/{tournament_id}')
 def get_tournament(
-        tournament_id: int,
-        db: orm.Session = fastapi.Depends(db_lib.get_db),
-) -> schemas.Tournament:
+    tournament_id: int,
+    db: orm.Session = fastapi.Depends(db_lib.get_db),
+) -> schemas.Tournament | None:
     """Get a tournament by ID
     Args:
         tournament_id (int): Tournament ID
@@ -96,11 +97,16 @@ def update_tournament(tournament_id: int,
         tournament_id (int): Tournament ID
         db (orm.Session): Database session
     """
-    tournaments_db.update_tournament(session=db,
-                                     tournament_id=tournament_id,
-                                     tournament=schema,
-                                     user_id=user_id)
-    return {'message': f'Tournament {tournament_id} updated!'}
+    tournament = tournaments_db.update_tournament(session=db,
+                                                  tournament_id=tournament_id,
+                                                  new_tournament=schema,
+                                                  user_id=user_id)
+    return ({
+        'message': f'Tournament {tournament_id} updated!'
+    } if tournament else {
+        'message':
+        f'Tournament {tournament_id} not found or user {user_id} is not the organizer'
+    })
 
 
 @app.delete('/tournaments/{tournament_id}')
@@ -127,7 +133,7 @@ def delete_tournament(
 ### Tournament status ###
 
 
-@app.put('/tournaments/{tournament_id}/fill')
+@app.put('/tournaments/{tournament_id}/fill', tags=['status'])
 def fill_tournament(
         tournament_id: int,
         user_id: int = fastapi.Depends(auth_lib.get_user_id),
@@ -140,15 +146,17 @@ def fill_tournament(
     Returns:
         dict: Success message
     """
-    tournaments_db.fill_tournament(
+    tournament = tournaments_db.fill_tournament(
         db,
         tournament_id,
         user_id=user_id,
     )
-    return {'message': f'Tournament {tournament_id} teams {user_id} filled!'}
+    return ({'message': f'Tournament {tournament_id} teams {user_id} filled!'} if tournament else {
+        'message': f'Error: adding user {user_id} in tournament {tournament_id}.'
+    })
 
 
-@app.put('/tournaments/{tournament_id}/remove_team')
+@app.put('/tournaments/{tournament_id}/remove_team', tags=['status'])
 def remove_team(
         tournament_id: int,
         user_id: int = fastapi.Depends(auth_lib.get_user_id),
@@ -167,6 +175,5 @@ def remove_team(
         return {'message': f'Error user {user_id} cannot be removed'}
     return {
         'message':
-        (f'Participant {user_id} removed from tournament {tournament_id}! '
-         f'{tournament.current_teams}/{tournament.max_teams}')
+        f'Participant {user_id} removed from tournament {tournament_id}!'
     }
