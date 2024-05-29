@@ -68,4 +68,8 @@ export class ClientApi implements Client {
 			return config;
 		});
 	}
+
+	setBase(base: string) {
+		this.BASE = base;
+	}
 }

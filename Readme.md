@@ -13,9 +13,20 @@ Social Network to organize and participate to tournaments
     - [x] create a client
     - [x] link to all request and pages 
 - [] Protect button with modal login/signup
-- [] Nginx/docker-compose 
+- [x] Nginx
+- [] docker-compose 
 - [] Finalize front end. 
     - [] Map => openstreetview
     - [] Sort find tournament
     - []
 -
+
+
+
+
+
+----------------------------------
+nginx: 
+
+sudo unlink /etc/nginx/sites-enabled/default
+sudo ln -s /home/florian/roadplay/nginx-config.conf /etc/nginx/sites-enabled/

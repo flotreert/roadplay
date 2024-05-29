@@ -10,10 +10,8 @@ from common import auth as auth_lib
 
 app = fastapi.FastAPI(
     title='Tournament Manager API',
-    tags=['tournament'],
     prefix='/api/tournaments',
-    openapi_prefix='/api/tournaments',
-    docs_prefix='/api/tournaments',
+    root_path='/api/tournaments',
 )
 
 origins = [
