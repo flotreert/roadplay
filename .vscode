@@ -2,14 +2,17 @@
     "editor.formatOnSave": true,
     "python.linting.pep8Enabled": true,
     "editor.defaultFormatter": "ms-python.python",
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true,
-        "source.fixAll.pylint": true,
-        "source.fixAll.stylelint": true,
-        "source.fixAll.yapf": true
-    },
+    "editor.formatOnSaveMode": "file",
+    "editor.tabCompletion": "on",
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "files.eol": "\n",
     "[python]": {
-        "editor.formatOnSave": true
+        "editor.defaultFormatter": "eeyore.yapf",
+        "editor.formatOnSave": true,
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4
       },
     "python.formatting.provider": "yapf",
     "python.linting.enabled": true,

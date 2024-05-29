@@ -149,8 +149,11 @@ def fill_tournament(
         tournament_id,
         user_id=user_id,
     )
-    return ({'message': f'Tournament {tournament_id} teams {user_id} filled!'} if tournament else {
-        'message': f'Error: adding user {user_id} in tournament {tournament_id}.'
+    return ({
+        'message': f'Tournament {tournament_id} teams {user_id} filled!'
+    } if tournament else {
+        'message':
+        f'Error: adding user {user_id} in tournament {tournament_id}.'
     })
 
 
