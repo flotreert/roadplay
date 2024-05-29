@@ -21,13 +21,13 @@ open many terminals:
 - [x] Client for front end.
     - [x] create a client
     - [x] link to all request and pages 
-- [] Protect button with modal login/signup
+- [ ] Protect button with modal login/signup
 - [x] Nginx
-- [] docker-compose 
-- [] Finalize front end. 
-    - [] Map => openstreetview
-    - [] Sort find tournament
-    - []
+- [ ] docker-compose 
+- [ ] Finalize front end. 
+    - [ ] Map => openstreetview
+    - [ ] Sort find tournament
+    - [ ]
 -
 
 
