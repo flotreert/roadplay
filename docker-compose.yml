@@ -1,28 +1,44 @@
-version: '3.11'
+# version: '3.11'
 
-services:
-  nginx:
-    image: nginx:latest
-    ports:
-      - 8000:8080
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - auth
-      - tournaments_manager
+# services:
+#   postgres:
+#       image: postgres:latest
+#       ports:
+#         - "5433:5432"
+#       volumes:
+#         - ./postgres_data:/var/lib/postgresql/data
+#       environment:
+#         - POSTGRES_USER=postgres
+#         - POSTGRES_PASSWORD=tournament
+#         - POSTGRES_DB=roadplay
+  
+#   nginx:
+#     image: nginx:latest
+#     ports:
+#       - "8080:8080"
+#     volumes:
+#       - ./nginx_config.conf:/etc/nginx/conf/default.conf
+#     depends_on:
+#       - auth
+#       - tournaments_manager
 
-  auth:
-    build: ./auth
-    command: uvicorn app.main:app --host 0.0.0.0
-    volumes:
-      - .:/app
-    ports:
-      - 8008:8000
+#   auth:
+#     build:
+#       context: .
+#       dockerfile: auth/Dockerfile
+#     command: python -m uvicorn auth.main:app --reload --host 0.0.0.0 --port 8000
+#     volumes:
+#       - .:/app
+#     ports:
+#       - 8001:8000
 
-  tournaments_manager:
-    build: ./core/tournaments_manager
-    command: uvicorn app.main:app --host
-    volumes:
-      - .:/app
-    ports:
-      - 8009:8000
+#   tournaments_manager:
+#     build:
+#       context: .
+#       dockerfile: core/tournaments_manager/Dockerfile
+#     command: python -m uvicorn core.tournaments_manager.main:app --reload --host 0.0.0.0 --port 8000
+#     volumes:
+#       - .:/app
+#     ports:
+#       - 8002:8000
+    
