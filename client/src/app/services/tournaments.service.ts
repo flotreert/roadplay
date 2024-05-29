@@ -1,9 +1,9 @@
 import {useQuery, useMutation, UseMutationOptions} from '@tanstack/react-query';
-import {TournamentDisplay} from '@/client';
-import { DefaultService } from '@/client';
+import { TournamentDisplay } from '@/client/types/tournaments';
+import { TournamentsService } from '@/client';
 
 const actions = {createTournament: ()  => ({
-    mutationFn: (data: TournamentDisplay) => DefaultService.createTournamentTournamentsPost({requestBody: data}),
+    mutationFn: (data: TournamentDisplay) => TournamentsService.createTournamentTournamentsPost({requestBody: data}),
     mutationKey: ['createTournament', 'create'],
     onSuccess: () => {
         console.log('Tournament created successfully');
@@ -13,7 +13,7 @@ const actions = {createTournament: ()  => ({
     }
     }),
     fillTournament: ()  => ({
-        mutationFn: (id: number) => DefaultService.fillTournamentTournamentsTournamentIdFillPost({tournamentId: id}),
+        mutationFn: (id: number) => TournamentsService.fillTournamentTournamentsTournamentIdFillPost({tournamentId: id}),
         mutationKey: ['fillTournament', 'fill'],
         onSuccess: () => {
             console.log('Tournament filled successfully');
@@ -33,14 +33,14 @@ export const useFillTournament = () => {
 
 export const useGetTournaments = () => {
     return useQuery({
-        queryFn: () => DefaultService.getTournamentsTournamentsGet(),
+        queryFn: () => TournamentsService.getTournamentsTournamentsGet(),
         queryKey: ['getTournaments', 'list'],
     });
 }
 
 export const useGetTournament = (id: number) => {
     return useQuery({
-        queryFn: () => DefaultService.getTournamentTournamentsTournamentIdGet({tournamentId: id}),
+        queryFn: () => TournamentsService.getTournamentTournamentsTournamentIdGet({tournamentId: id}),
         queryKey: ['getTournament', id],
         refetchInterval(query) {
             return 60;

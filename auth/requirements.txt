@@ -1,7 +1,10 @@
 alembic==1.13.1
 fastapi==0.110
-python-multipart==0.0.9
+jwt==1.3.1
+passlib[context]==1.7.4
 psycopg2_binary==2.9.9
 pydantic==2.7.1
+python_jose[cryptography]==3.3.0
+python-multipart==0.0.9
 sqlalchemy==2.0.29
 uvicorn==0.29.0

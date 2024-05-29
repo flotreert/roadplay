@@ -24,7 +24,7 @@ export class Interceptors<T> {
   }
 }
 
-export type OpenAPIConfig = {
+export type Client = {
 	BASE: string;
 	CREDENTIALS: 'include' | 'omit' | 'same-origin';
 	ENCODE_PATH?: ((path: string) => string) | undefined;
@@ -40,18 +40,36 @@ export type OpenAPIConfig = {
 	};
 };
 
-export const OpenAPI: OpenAPIConfig = {
-	BASE: '',
-	CREDENTIALS: 'include',
-	ENCODE_PATH: undefined,
-	HEADERS: undefined,
-	PASSWORD: undefined,
-	TOKEN: undefined,
-	USERNAME: undefined,
-	VERSION: '0.1.0',
-	WITH_CREDENTIALS: false,
+// TODO: check the base
+export class ClientApi implements Client {
+	BASE: string = 'http://localhost:8080';
+	CREDENTIALS: 'include' | 'omit' | 'same-origin' = 'include';
+	ENCODE_PATH?: ((path: string) => string) | undefined;
+	HEADERS?: Headers | Resolver<Headers> | undefined;
+	PASSWORD?: string | Resolver<string> | undefined;
+	TOKEN?: string | Resolver<string> | undefined;
+	USERNAME?: string | Resolver<string> | undefined;
+	VERSION: string = '0.1.0';
+	WITH_CREDENTIALS: boolean = false;
 	interceptors: {
-		request: new Interceptors(),
-		response: new Interceptors(),
-	},
-};
+		request: Interceptors<AxiosRequestConfig>;
+		response: Interceptors<AxiosResponse>;
+	} = {
+		request: new Interceptors<AxiosRequestConfig>(),
+		response: new Interceptors<AxiosResponse>(),
+	};
+
+	setToken(token: string | Resolver<string>) {
+		this.TOKEN = token;
+		this.interceptors.request.use((config: AxiosRequestConfig) => {
+			if (config.headers) {
+				config.headers.Authorization = `Bearer ${token}`;
+			}
+			return config;
+		});
+	}
+
+	setBase(base: string) {
+		this.BASE = base;
+	}
+}

@@ -1,0 +1,39 @@
+{
+    "editor.formatOnSave": true,
+    "python.linting.pep8Enabled": true,
+    "editor.defaultFormatter": "ms-python.python",
+    "editor.formatOnSaveMode": "file",
+    "editor.tabCompletion": "on",
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "files.eol": "\n",
+    "[python]": {
+        "editor.defaultFormatter": "eeyore.yapf",
+        "editor.formatOnSave": true,
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4
+      },
+    "python.formatting.provider": "yapf",
+    "python.linting.enabled": true,
+    "python.formatting.yapfArgs": [
+        "--style",
+        ".style.yapf"
+    ],
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintArgs": [
+        "--load-plugins",
+        "pylint.extensions.docparams",
+        "--disable",
+        "C0114,C0115,C0116"
+    ],
+    "eslint.autoFixOnSave": true,
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact"
+    ],
+    "prettier.requireConfig": true,
+    "prettier.ignorePath": ".prettierignore"
+}

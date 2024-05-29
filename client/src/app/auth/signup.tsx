@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
+import { useSignUp } from '../services/auth.service';
 import './auth.css';
 
 const SignupForm: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('');
+    const {mutate: signUp} = useSignUp();
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
+    };
+
+    const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUsername(e.target.value);
     };
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -15,9 +22,7 @@ const SignupForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Add your sign-up logic here
-        console.log('Email:', email);
-        console.log('Password:', password);
+        signUp({username: username, password: password, email: email})
     };
 
     return (
@@ -30,6 +35,14 @@ const SignupForm: React.FC = () => {
                     id="email" 
                     value={email} 
                     onChange={handleEmailChange} />
+            </div>
+            <div className='input-auth'>
+                <label>Username </label>
+                <input 
+                    className='input-auth-enter' 
+                    id="username" 
+                    value={username} 
+                    onChange={handleUsernameChange} />
             </div>
             <div className='input-auth'>
                 <label htmlFor="password">Password </label>

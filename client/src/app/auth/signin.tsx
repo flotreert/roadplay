@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+import { useLogin } from '../services/auth.service';
+
 import './auth.css';
 
 const SignInForm: React.FC = () => {
     const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const {mutate: login} = useLogin();
 
     // TODO: check auth status
     const  [isSignin, setIsSignin] = useState(false);
@@ -13,17 +17,18 @@ const SignInForm: React.FC = () => {
         setEmail(e.target.value);
     };
 
+    const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUsername(e.target.value);
+    };
+
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Add your sign-in logic here
-        window.alert(`logging with Email: ${email}, ' Password:, ${password}`);
+        login({username: username, password: password});
         setIsSignin(true);
-        // TODO: redirect to post page
-        window.location.href = '/find-tournament';
     };
 
     return (
@@ -36,6 +41,15 @@ const SignInForm: React.FC = () => {
                     id="email"
                     value={email}
                     onChange={handleEmailChange}
+                    />
+            </div>
+            <div className='input-auth'>
+                <label>Username </label>
+                <input
+                    className='input-auth-enter'
+                    id="username"
+                    value={username}
+                    onChange={handleUsernameChange}
                     />
             </div>
             <div className='input-auth'>
