@@ -55,7 +55,7 @@ const Map: React.FC = () => {
                 container: mapContainerRef.current,
                 style: 'mapbox://styles/mapbox/streets-v12',
                 zoom: zoomLevel,
-                center: selectedLocation.latitude ? [selectedLocation.longitude, selectedLocation.latitude]: [currentPosition.longitude, currentPosition.latitude] ,
+                // center: selectedLocation.latitude ? [selectedLocation.longitude, selectedLocation.latitude]: [currentPosition.longitude, currentPosition.latitude] ,
             });
             // Add any additional map customization or features here
 
