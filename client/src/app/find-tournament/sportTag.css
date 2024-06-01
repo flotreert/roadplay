@@ -1,0 +1,23 @@
+.tag:hover {
+    background-color: #938cf2;
+}
+
+.tag:disabled {
+    background-color: #004080;
+}
+
+.tagActive {
+    background-color: #6e16fb;
+}
+
+
+.tag {
+    --dynamic-color: #3221f5c2;
+    padding: 5px 20px;
+    background-color: var(--dynamic-color);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 3px;
+}

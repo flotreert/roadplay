@@ -21,7 +21,7 @@ export type Tournament = {
     category: string;
     fees: number;
     number_of_teams: number;
-    current_teams: number;
+    participants: Array<(number)>;
     description: string;
 };
 
@@ -132,7 +132,7 @@ export type $OpenApiTs = {
         };
     };
     '/tournaments/{tournament_id}/fill': {
-        post: {
+        put: {
             req: {
                 tournamentId: number;
             };
@@ -149,7 +149,7 @@ export type $OpenApiTs = {
         };
     };
     '/tournaments/{tournament_id}/remove_team': {
-        post: {
+        put: {
             req: {
                 tournamentId: number;
             };

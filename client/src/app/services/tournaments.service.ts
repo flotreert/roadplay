@@ -13,7 +13,7 @@ const actions = {createTournament: ()  => ({
     }
     }),
     fillTournament: ()  => ({
-        mutationFn: (id: number) => TournamentsService.fillTournamentTournamentsTournamentIdFillPost({tournamentId: id}),
+        mutationFn: (id: number) => TournamentsService.fillTournamentTournamentsTournamentIdFillPut({tournamentId: id}),
         mutationKey: ['fillTournament', 'fill'],
         onSuccess: () => {
             console.log('Tournament filled successfully');
@@ -42,9 +42,6 @@ export const useGetTournament = (id: number) => {
     return useQuery({
         queryFn: () => TournamentsService.getTournamentTournamentsTournamentIdGet({tournamentId: id}),
         queryKey: ['getTournament', id],
-        refetchInterval(query) {
-            return 60;
-        },
     });
 }
 

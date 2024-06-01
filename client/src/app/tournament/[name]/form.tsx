@@ -1,10 +1,11 @@
 import React, { use, useState } from 'react';
-import { Tournament } from '@/client';
+import { Tournament } from '../../../client/types/tournaments';
 import './form.css';
 import { useFillTournament } from '@/app/services/tournaments.service';
+import { on } from 'events';
 
 // TODO: register who's participating to the tournament
-const ParticipateForm: React.FC<{ tournament: Tournament }> = ({ tournament }) => {
+const ParticipateForm: React.FC<{ tournament: Tournament, onRefetch: () => void }> = ({ tournament, onRefetch }) => {
     const {mutate: fillTournament} = useFillTournament();
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
@@ -25,6 +26,7 @@ const ParticipateForm: React.FC<{ tournament: Tournament }> = ({ tournament }) =
             }
         }
         fillTournament(tournament.id);
+        onRefetch();
     };
     const handleContactOrganizer = () => {
         // Perform contact organizer logic here

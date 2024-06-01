@@ -1,21 +1,32 @@
 'use client';
 import React from 'react';
+import {useEffect, useState} from 'react';
 import { usePathname } from 'next/navigation';
 import { useGetTournament } from '@/app/services/tournaments.service';
 import ProgressBar from '@/app/components/progressBar';
-import { Tournament } from '@/client';
+import { Tournament } from '../../../client/types/tournaments';
 import ParticipateForm from './form';
 
 const calculateFilling = (tournament: Tournament) => {
-    return Math.floor(tournament.current_teams / tournament.number_of_teams * 100);
+    return Math.floor(tournament.participants.length / tournament.number_of_teams * 100);
 };
 
 export default function TournamentDetails() {
     const route = usePathname();
     const routeParts = route.split('/');
     const id = Number(routeParts[routeParts.length - 1]); // Convert id to number
-    const {data: selectedTournament} =  useGetTournament(id);
-    console.log(selectedTournament);
+    const [tournamentId, setTournamentId] = useState(id);
+    const { data: selectedTournament, refetch } = useGetTournament(tournamentId);
+
+    const handleRefetch = () => {
+        refetch();
+        window.location.reload();
+    };
+
+    useEffect(() => {
+        setTournamentId(id);
+    }, [id]);
+    
     if (!selectedTournament) {
         return (
             <div>
@@ -25,8 +36,8 @@ export default function TournamentDetails() {
             </div>
         );
     }
-
-
+    
+    
     return (
         <main>
             <div style={{maxWidth:'400px'}}>
@@ -42,7 +53,7 @@ export default function TournamentDetails() {
                 <p>{selectedTournament.age_group}</p>
                 <p>{selectedTournament.fees}$</p>
             </div>
-            <ParticipateForm tournament={selectedTournament} />
-        </main>
+            <ParticipateForm tournament={selectedTournament} onRefetch={handleRefetch} />
+            </main>
     );
 };

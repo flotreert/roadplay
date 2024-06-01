@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './table.css';
-import { Tournament } from '@/client';
+import { Tournament } from '../../client/types/tournaments';
 import { useGetTournaments } from '../services/tournaments.service';
+import SportTag from './sportTag';
+import feesSelector from './feesSelector';
+import FeesSelector from './feesSelector';
+
 
 const filterData = (data: Tournament[], filterOption: string, filter: string) => {
     return data.filter(item => {
@@ -33,25 +37,32 @@ const columns = {
     start_date: 'Start Date',
     end_date: 'End Date',
     location: 'Location',
-    sport: 'Sport',
     age_group: 'Age.s',
     category: 'Category',
     fees: 'Fees',
     number_of_teams: 'Teams',
     description: 'Description',
-}
+} 
 
 const TournamentTable: React.FC = () => {
-    const {data: allData} = useGetTournaments();
-    const [data, setData] = useState(allData); 
+    const { data: allData } = useGetTournaments();
+    
+    const [data, setData] = useState(allData);
     const [filter, setFilter] = useState('');
     const [sortKey, setSortKey] = useState('');
-    
-    const filterOptions = ['Name', 'Sport', 'Category', 'Age', 'City', 'Fees', 'Location'];
+    const sports = ['Football', 'Basketball', 'Tennis', 'Volleyball'];
+    const filterOptions = ['Name', 'Category', 'Age', 'City', 'Location'];
     const [filterOption, setFilterOption] = useState(filterOptions[0]);
+    const [openFilter, setOpenFilter] = useState(false);
+    
+
+    useEffect(() => {
+        setData(allData);
+    }, [allData]);
+
 
     const handleSort = (key: string) => {
-        const sortedData = data?.sort((a, b) => {
+        const sortedData = allData?.sort((a, b) => {
             if (sortKey === key) {
                 return a[key as keyof Tournament] && b[key as keyof Tournament] ? a[key as keyof Tournament]! > b[key as keyof Tournament]! ? -1 : 1 : 0;
             }
@@ -61,21 +72,39 @@ const TournamentTable: React.FC = () => {
         console.log('sortedData', sortedData)
         setSortKey(key);
     };
-
+    
     const handleFilter = (filter: string) => {
         const filteredData = filterData(allData || [], filterOption, filter);
         setData(filteredData);
         setFilter(filter);
     };
-
+    
+    const handleSportFilter = (selectedSport: string) => {
+        if (selectedSport === '') {
+            setData(allData);
+            return;
+        }
+        const filteredData = allData?.filter(item => item.sport === selectedSport);
+        setData(filteredData);
+    }
+    
+    const handleFeesFilter = (min: number, max: number) => {
+        const filteredData = allData?.filter(item => item.fees >= min && item.fees <= max);
+        setData(filteredData);
+    }
 
     const handleRowClick = (item: Tournament) => {
         // TODO: isLoading 
         window.location.href = `/tournament/${item.id}`;
     };
-
+    
     return (
         <div>
+        <button onClick={() => setOpenFilter(!openFilter)}>Filter</button>
+        <div className='grid'>
+            {openFilter && (
+                <div className='grid-item'>
+            <SportTag sports={sports} onSelect={(selectedSport: any) => handleSportFilter(selectedSport)} />
             <div className='filter'>
                 <select className='select-filter' value={filterOption} onChange={e => setFilterOption(e.target.value)}>
                     {filterOptions.map(option => (
@@ -88,8 +117,11 @@ const TournamentTable: React.FC = () => {
                     placeholder={`Filter by ${filterOption.toLowerCase()}`}
                     value={filter}
                     onChange={e => handleFilter(e.target.value)}
-                />
+                    />
             </div>
+            <FeesSelector onSelect={handleFeesFilter} />
+            </div>
+                )}
             <div className='table-container'>
                 <table>
                     <thead>
@@ -106,10 +138,10 @@ const TournamentTable: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {allData?.map((item, index) => (
+                        {data?.map((item, index) => (
                             <tr 
-                                key={item.id} 
-                                style={{ backgroundColor: index % 2 === 0 ? 'white' : 'lightgray' }} 
+                            key={item.id} 
+                            style={{ backgroundColor: index % 2 === 0 ? 'white' : 'lightgray' }} 
                                 onClick={() => handleRowClick(item)}
                             >
                                 {Object.entries(item).map(([key, value]) => {
@@ -126,6 +158,7 @@ const TournamentTable: React.FC = () => {
                         ))}
                     </tbody>
                 </table>
+            </div>
             </div>
         </div>
     );
