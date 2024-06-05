@@ -12,23 +12,22 @@ const FeesSelector: React.FC<FeesSelectorProps>  = ({onSelect}) => {
 
     const handleMinChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const minValue = parseInt(event.target.value);
-        setMinValue(Math.min(maxValue, minValue));
+        setMinValue(minValue);
         onSelect(minValue, maxValue);
     };
 
     const handleMaxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const maxValue = parseInt(event.target.value);
-        setMaxValue(Math.max(maxValue, minValue));
+        setMaxValue(maxValue);
         onSelect(minValue, maxValue);
     };
 
     return (
-        <div className='feesSelector'>
-            <span>Fees range: </span>
-            <input type="number" value={minValue} onChange={handleMinChange} />
-            <span>€</span>
+        <div>
+            <input type="number" value={minValue} onChange={handleMinChange} className={minValue > maxValue ? 'error' : ''} min={0} />
+            <span>€ </span>
             <span> to </span>
-            <input type="number" value={maxValue} onChange={handleMaxChange} />
+            <input type="number" value={maxValue} onChange={handleMaxChange} className={minValue > maxValue ? 'error' : ''} min={0} />
             <span>€</span>
         </div>
     );

@@ -1,64 +1,109 @@
 import React, { useEffect, useState } from 'react';
-import './table.css';
 import { Tournament } from '../../client/types/tournaments';
 import { useGetTournaments } from '../services/tournaments.service';
-import SportTag from './sportTag';
-import feesSelector from './feesSelector';
 import FeesSelector from './feesSelector';
+import './table.css';
+import './tags.css';
+import { compileFunction } from 'vm';
+interface Filter {
+    key: string;
+    value: any[];
+}
 
-
-const filterData = (data: Tournament[], filterOption: string, filter: string) => {
+const filterData = (data: Tournament[], filter: Filter) => {
     return data.filter(item => {
-        // Filter logic based on selected filter option
-        switch (filterOption) {
-            case 'Name':
-                return item.name.toLowerCase().includes(filter.toLowerCase());
-            case 'Sport':
-                return item.sport.toLowerCase().includes(filter.toLowerCase());
-            case 'Category':
-                return item.category.toLowerCase().includes(filter.toLowerCase());
-            case 'Sex':
-                return item.sex.toLowerCase().includes(filter.toLowerCase());
-            case 'Age':
-                return item.age_group.join(', ').toLowerCase().includes(filter.toLowerCase());
-            case 'Fees':
-                return item.fees.toString().includes(filter);
-            case 'Location':
-                return item.location.toLowerCase().includes(filter.toLowerCase());
-            default:
-                return true;
+        switch (filter.key) {
+            case 'fees':
+                console.log('fees', filter.value[0], filter.value[1])
+                return (item.fees >= filter.value[0] && item.fees <= filter.value[1]);
+            case 'sport':
+                return filter.value.includes(item.sport) || filter.value.length === 0;
+            case 'ages':
+                return filter.value.some((age: string) => item.age_group.includes(age)) || filter.value.length === 0;
+            case 'name':
+                return item.name.toLowerCase().includes(String(filter.value).toLowerCase()) || filter.value.length === 0;
+            case 'location':
+                return item.location.toLowerCase().includes(String(filter.value).toLowerCase()) || filter.value.length === 0;
+            case 'category':
+                return String(filter.value).toLowerCase().includes(item.category.toLowerCase()) || filter.value.length === 0;
+            case 'start_date':
+                return item.start_date >= filter.value[0] || filter.value.length === 0;
+            case 'end_date':
+                return item.end_date <= filter.value[0] || filter.value.length === 0;
+            case 'sex':
+                return filter.value.some((sex: string) => item.sex.includes(sex)) || filter.value.length === 0; 
+            
+
         }
     });
 };
 
+const multiFilterData = (data: Tournament[], filters: Filter[]) => {
+    return filters.reduce((acc, filter) => {
+        return filterData(acc, filter);
+    }
+    , data 
+);
+}
+
+
 const columns = {
     name: 'Name',
-    sex: 'Sex',
     start_date: 'Start Date',
-    end_date: 'End Date',
     location: 'Location',
-    age_group: 'Age.s',
-    category: 'Category',
     fees: 'Fees',
     number_of_teams: 'Teams',
-    description: 'Description',
 } 
 
 const TournamentTable: React.FC = () => {
     const { data: allData } = useGetTournaments();
     
     const [data, setData] = useState(allData);
-    const [filter, setFilter] = useState('');
+    const [location, setLocation] = useState('');
+    const [name, setName] = useState('');
     const [sortKey, setSortKey] = useState('');
     const sports = ['Football', 'Basketball', 'Tennis', 'Volleyball'];
-    const filterOptions = ['Name', 'Category', 'Age', 'City', 'Location'];
+    //TODO: Use range and union range
+    const allAges = ['Under 10', '10-12', '13-15', '16-18', 'Over 18'];
+    const allSex = ['Male', 'Female', 'Mixed'];
+    const allCategory = ['Professional', 'Amateur-National', 'Amateur-Regional', 'Amateur-District', 'Beginner'];
+    const filterOptions = ['Name', 'Location'];
     const [filterOption, setFilterOption] = useState(filterOptions[0]);
+    const [selectedFilters, setSelectedFilters] = useState<Filter[]>([{key: 'fees', value: [0, 1000]}]);
     const [openFilter, setOpenFilter] = useState(false);
     
 
     useEffect(() => {
         setData(allData);
     }, [allData]);
+
+
+    const handleFilterChange = (name: string, value: any) => {
+        const updatedFilters = [...selectedFilters];
+        const index = updatedFilters.findIndex(filter => filter.key === name);
+        if (index == -1){
+            updatedFilters.push({key: name, value: [value]});
+            setSelectedFilters(updatedFilters);
+            const filteredData = multiFilterData(allData || [], updatedFilters);
+            setData(filteredData);
+            return
+        }
+        
+        // TODO: Refactor this
+        if (name === 'name' || name === 'location' || name === 'start_date' || name === 'end_date') {
+            updatedFilters[index].value = [value];
+        } else if (name === 'fees'){
+            updatedFilters[index].value = value
+        } else if (updatedFilters[index].value.includes(value)) {
+            updatedFilters[index].value = updatedFilters[index].value.filter(item => item !== value);
+        } else {
+            updatedFilters[index].value.push(value);
+        }
+        setSelectedFilters(updatedFilters);
+        const filteredData = multiFilterData(allData || [], updatedFilters);
+        console.log('===', updatedFilters)
+        setData(filteredData);
+    };
 
 
     const handleSort = (key: string) => {
@@ -72,93 +117,157 @@ const TournamentTable: React.FC = () => {
         console.log('sortedData', sortedData)
         setSortKey(key);
     };
-    
-    const handleFilter = (filter: string) => {
-        const filteredData = filterData(allData || [], filterOption, filter);
-        setData(filteredData);
-        setFilter(filter);
-    };
-    
-    const handleSportFilter = (selectedSport: string) => {
-        if (selectedSport === '') {
-            setData(allData);
-            return;
-        }
-        const filteredData = allData?.filter(item => item.sport === selectedSport);
-        setData(filteredData);
-    }
-    
-    const handleFeesFilter = (min: number, max: number) => {
-        const filteredData = allData?.filter(item => item.fees >= min && item.fees <= max);
-        setData(filteredData);
-    }
 
-    const handleRowClick = (item: Tournament) => {
+    const handleTournamentClick = (item: Tournament) => {
         // TODO: isLoading 
         window.location.href = `/tournament/${item.id}`;
     };
     
+    const filterSports = selectedFilters.find(filter => filter.key === 'sport')?.value || [];
+    const filterages = selectedFilters.find(filter => filter.key === 'ages')?.value || [];
+    const filtersex = selectedFilters.find(filter => filter.key === 'sex')?.value || [];
+    const filtercategory = selectedFilters.find(filter => filter.key === 'category')?.value || [];
+
     return (
         <div>
-        <button onClick={() => setOpenFilter(!openFilter)}>Filter</button>
-        <div className='grid'>
-            {openFilter && (
-                <div className='grid-item'>
-            <SportTag sports={sports} onSelect={(selectedSport: any) => handleSportFilter(selectedSport)} />
-            <div className='filter'>
-                <select className='select-filter' value={filterOption} onChange={e => setFilterOption(e.target.value)}>
-                    {filterOptions.map(option => (
-                        <option key={option} value={option}>{option}</option>
-                    ))}
-                </select>
-                <input
-                    type="text"
-                    className='filter-input'
-                    placeholder={`Filter by ${filterOption.toLowerCase()}`}
-                    value={filter}
-                    onChange={e => handleFilter(e.target.value)}
-                    />
-            </div>
-            <FeesSelector onSelect={handleFeesFilter} />
-            </div>
+            <button className='filter-button' onClick={() => setOpenFilter(!openFilter)}>Filter</button>
+            <div className='grid-container'>
+                {openFilter && (
+                    <div className='grid-item-filter'>
+                        <div>
+                            <h4>Sport.s</h4>
+                            <ul>
+                                {sports.map((sport) => (
+                                    <button 
+                                        key={sport}
+                                        onClick={() => handleFilterChange('sport', sport)}
+                                        style={{ cursor: 'pointer' }}
+                                        className={filterSports.includes(sport) ? 'tagActive' : 'tag'}
+                                    >
+                                        {sport}
+                                    </button>
+                                ))}
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Dates</h4>
+                            <div style={{display: 'flex', flexDirection:'row', alignItems: 'center'}}>
+                                <label>From </label>
+                                <input
+                                    type="date"
+                                    value={selectedFilters.find(filter => filter.key === 'start_date')?.value || ''}
+                                    onChange={e => handleFilterChange('start_date', e.target.value)}
+                                />
+                                <label>to</label>
+                                <input
+                                    type="date"
+                                    value={selectedFilters.find(filter => filter.key === 'end_date')?.value || ''}
+                                    onChange={e => handleFilterChange('end_date', e.target.value)}
+                                />
+                            </div>
+                        </div>
+                        <h4>Location</h4>
+                        <div className='filter'>
+                            <input
+                                type="text"
+                                className='filter-input'
+                                placeholder={`Filter by location`}
+                                value={location}
+                                onChange={e => {
+                                    setLocation(e.target.value);
+                                    handleFilterChange('location', e.target.value);
+                                }}
+                                />
+                        </div>
+                        <h4>Fees</h4>
+                        <FeesSelector onSelect={(min: number, max: number) => handleFilterChange('fees', [min, max])} />
+                        <div>
+                            <h4>Age.s</h4>
+                            <ul>
+                                {allAges.map((ages: string) => (
+                                    <button 
+                                        key={ages}
+                                        onClick={() => handleFilterChange('ages', ages)}
+                                        style={{ cursor: 'pointer' }}
+                                        className={filterages.includes(ages) ? 'tagActive' : 'tag'}
+                                    >
+                                        {ages}
+                                    </button>
+                                ))}
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Sex</h4>
+                            <ul>
+                                {allSex.map((sex: string) => (
+                                    <button 
+                                        key={sex}
+                                        onClick={() => handleFilterChange('sex', sex)}
+                                        style={{ cursor: 'pointer' }}
+                                        className={filtersex.includes(sex) ? 'tagActive' : 'tag'}
+                                    >
+                                        {sex}
+                                    </button>
+                                ))}
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Category</h4>
+                            <ul>
+                                {allCategory.map((category: string) => (
+                                    <button 
+                                        key={category}
+                                        onClick={() => handleFilterChange('category', category)}
+                                        style={{ cursor: 'pointer' }}
+                                        className={filtercategory.includes(category) ? 'tagActive' : 'tag'}
+                                    >
+                                        {category}
+                                    </button>
+                                ))}
+                            </ul>
+                        </div>
+                        
+                    </div>
                 )}
-            <div className='table-container'>
-                <table>
-                    <thead>
-                        <tr>
-                            {Object.entries(columns).map(([key, value]) => {
-                                return (
-                                    <th key={key} style={{ backgroundColor: 'lightgray', padding: '8px' }} onClick={() => handleSort(key)}>
-                                        <div className='title'>
-                                            {value + '  ▲'}
-                                        </div>
-                                    </th>
-                                );
-                            })}
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div>
+                    <div className='filter'>
+                        <input
+                            type="text"
+                            className='search-input'
+                            placeholder={`Search by name`}
+                            value={name}
+                            onChange={e => {
+                                setName(e.target.value);
+                                handleFilterChange('name', e.target.value);
+                            }}
+                            style={{maxWidth: '200px'}}
+                            />
+                        <div className='filter'>
+                            <h6>Sort</h6>
+                            <button className='sort' onClick={() => handleSort('fees')}>fees</button>
+                        </div>
+                    </div>
+                    <div className='grid-tournament-container'>
                         {data?.map((item, index) => (
-                            <tr 
-                            key={item.id} 
-                            style={{ backgroundColor: index % 2 === 0 ? 'white' : 'lightgray' }} 
-                                onClick={() => handleRowClick(item)}
-                            >
+                            <div className='grid-tournament-item' key={item.id} onClick={() => handleTournamentClick(item)}>
+                                <div className='name'>
+                                    {item.name}
+                                </div>
                                 {Object.entries(item).map(([key, value]) => {
-                                    if (key in columns) {
+                                    if (key !== 'name' && key in columns) {
                                         return (
-                                            <td key={String(value)} className='row'>
-                                                {Array.isArray(value) ? value.join(', ') : value}
-                                            </td>
+                                            <div key={key}>
+                                                <h6>{columns[key as keyof typeof columns]}</h6>
+                                                {value}
+                                            </div>
                                         );
                                     }
-                                    return null;
+                                    return null; // Add this line to handle the case when the key is not in columns
                                 })}
-                            </tr>
+                            </div>
                         ))}
-                    </tbody>
-                </table>
-            </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

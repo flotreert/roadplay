@@ -7,6 +7,7 @@ import {useCreateTournament} from '../services/tournaments.service';
 import './organize.css';
 
 const sports = ['Football', 'Basketball', 'Tennis', 'Volleyball'];
+// TODO: Use range and union range
 const ageGroups = ['Under 10', '10-12', '13-15', '16-18', 'Over 18'];
 const categories = ['Professional', 'Amateur-National', 'Amateur-Regional', 'Amateur-District', 'Beginner'];
 const sexes = ['Male', 'Female', 'Mixed'];
