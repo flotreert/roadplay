@@ -141,7 +141,7 @@ const TournamentTable: React.FC = () => {
                                     <button 
                                         key={sport}
                                         onClick={() => handleFilterChange('sport', sport)}
-                                        style={{ cursor: 'pointer' }}
+                                        style={{ cursor: 'pointer', '--dynamic-color': '#a316fba2'}}
                                         className={filterSports.includes(sport) ? 'tagActive' : 'tag'}
                                     >
                                         {sport}
@@ -188,7 +188,7 @@ const TournamentTable: React.FC = () => {
                                     <button 
                                         key={ages}
                                         onClick={() => handleFilterChange('ages', ages)}
-                                        style={{ cursor: 'pointer' }}
+                                        style={{ cursor: 'pointer', '--dynamic-color': '#dda420a2' }}
                                         className={filterages.includes(ages) ? 'tagActive' : 'tag'}
                                     >
                                         {ages}
@@ -203,7 +203,7 @@ const TournamentTable: React.FC = () => {
                                     <button 
                                         key={sex}
                                         onClick={() => handleFilterChange('sex', sex)}
-                                        style={{ cursor: 'pointer' }}
+                                        style={{ cursor: 'pointer', '--dynamic-color': '#69ddf5'}}
                                         className={filtersex.includes(sex) ? 'tagActive' : 'tag'}
                                     >
                                         {sex}
@@ -218,7 +218,7 @@ const TournamentTable: React.FC = () => {
                                     <button 
                                         key={category}
                                         onClick={() => handleFilterChange('category', category)}
-                                        style={{ cursor: 'pointer' }}
+                                        style={{ cursor: 'pointer', '--dynamic-color': '#6977f5' }}
                                         className={filtercategory.includes(category) ? 'tagActive' : 'tag'}
                                     >
                                         {category}

@@ -1,28 +1,31 @@
+
+:root{
+    --dynamic-color: #6977f5;
+}
 .tag:hover {
-    background-color: #938cf2;
+    background-color: var(--dynamic-color);
+    opacity: 0.5;
 }
 
-.tag:disabled {
-    background-color: #004080;
-}
 
 .tagActive {
-    background-color: #a316fba2;
     padding: 5px 20px;
-    border: none;
+    background-color: var(--dynamic-color);
+    opacity: 2;
     border-radius: 10px;
     cursor: pointer;
     margin: 3px;
 }
 
-
 .tag {
-    --dynamic-color: #3221f5c2;
     padding: 5px 20px;
     background-color: var(--dynamic-color);
+    opacity: 0.8;
     color: #fff;
     border: none;
     border-radius: 10px;
     cursor: pointer;
     margin: 3px;
 }
+
+
