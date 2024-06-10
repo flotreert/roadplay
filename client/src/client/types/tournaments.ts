@@ -17,7 +17,7 @@ export type Tournament = {
     end_date: string;
     location: string;
     sport: string;
-    age_group: Array<(string)>;
+    age_group: Array<(number)>;
     category: string;
     fees: number;
     number_of_teams: number;
@@ -35,7 +35,7 @@ export type TournamentDisplay = {
     end_date: string;
     location: string;
     sport: string;
-    age_group: Array<(string)>;
+    age_group: Array<(number)>;
     category: string;
     fees: number;
     number_of_teams: number;

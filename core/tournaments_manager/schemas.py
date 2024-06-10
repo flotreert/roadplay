@@ -21,7 +21,7 @@ class Tournament(TournamentBase):
     end_date: datetime.date  #change to date
     location: str
     sport: str
-    age_group: list[str]
+    age_group: tuple[int, int]
     category: str
     fees: int
     number_of_teams: int
@@ -39,7 +39,7 @@ class TournamentDisplay(pydantic.BaseModel):
     end_date: datetime.date | None = None  #change to date
     location: str | None = None
     sport: str | None = None
-    age_group: list[str] | None = None
+    age_group: tuple[int, int] = []
     category: str | None = None
     fees: int | None = None
     number_of_teams: int | None = None
