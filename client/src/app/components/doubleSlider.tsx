@@ -2,6 +2,7 @@ import {
     ChangeEvent,
     FC,
     useCallback,
+    EffectCallback,
     useEffect,
     useState,
     useRef
@@ -26,10 +27,7 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({
   const range = useRef<HTMLDivElement>(null);
 
   // Convert to percentage
-  const getPercent = useCallback(
-    (value: number) => Math.round(((value - min) / (max - min)) * 100),
-    [min, max]
-  );
+  const getPercent = useCallback((value: number) => Math.round(((value - min) / (max - min)) * 100), [min, max]);
 
   // Set width of the range to decrease from the left side
   useEffect(() => {
@@ -56,13 +54,12 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({
     }
   }, [maxVal, getPercent]);
 
-  // Get min and max values when their state changes
-  useEffect(() => {
-    onChange({ min: minVal, max: maxVal });
-  }, [minVal, maxVal, onChange]);
+  
 
+  // TODO: Fix the size of the circle interval
   return (
     <div className="slider-container">
+      <div className="slider">
       <input
         type="range"
         min={min}
@@ -73,6 +70,7 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({
           const value = Math.min(+event.target.value, maxVal - 1);
           setMinVal(value);
           event.target.value = value.toString();
+          onChange({ min: value, max: maxVal });
         }}
         className='thumb'
       />
@@ -86,11 +84,10 @@ const MultiRangeSlider: FC<MultiRangeSliderProps> = ({
           const value = Math.max(+event.target.value, minVal + 1);
           setMaxVal(value);
           event.target.value = value.toString();
+          onChange({ min: minVal, max: value });
         }}
         className="thumb"
       />
-
-      <div className="slider">
         <div className="slider__track"></div>
         <div ref={range} className="slider__range"></div>
         <div className="slider__left-value">{minVal}</div>

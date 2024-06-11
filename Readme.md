@@ -16,13 +16,15 @@ open many terminals:
 # TODO 
 
 - [ ] Protect button with modal login/signup
-- [ ] docker-compose 
+- [ ] Refresh token
+- [ ] Third party connexion
+- [ ] docker-compose (add postgres) 
 - [ ] Map => openstreetview
 - [x] Refacto Find tournament
-- [ ] Age as interval number
+- [x] Age as interval number
 - [ ] Image on server (todo on Google)
 - [ ] Participate to tournament page
--
+- [ ] size DualRange
 
 
 

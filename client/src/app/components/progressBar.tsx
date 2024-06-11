@@ -8,9 +8,9 @@ interface ProgressBarProps {
 const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {    
     const formatedProgress = progress || 0 ;
     return (
-        <div className='container'>
-          <div className='filler' style={{ width: `${formatedProgress}%` }}>
-                <span className='style'>{`${Math.round(progress)}%`}</span>
+        <div className='barcontainer'>
+          <div className='circle'></div>
+          <div className='bar' style={{ height: `${formatedProgress}%` }}>
           </div>
         </div>
       );

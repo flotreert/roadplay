@@ -44,7 +44,7 @@ input[type="text"] {
     border-radius: 10px;
     font-size: large;
     margin: 10px;
-    width: 95%;
+    width: 100%
 }
 
 input[type="checkbox"]{
@@ -71,6 +71,11 @@ input[type="number"] {
     font-size: large;
     margin: 10px;
     width: 95%;
+}
+
+input[type="range"]{
+    width: 100%;
+
 }
 /* Styling for select bar */
 select {
@@ -177,3 +182,10 @@ form {
 
 
 
+.grid-container{
+    display: flex;
+    grid-template-columns: 2fr 2fr;
+    grid-gap: 10px;
+    border-color: rgb(153, 227, 16);
+    flex-direction: row;
+}

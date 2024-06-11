@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Tournament } from '../../client/types/tournaments';
 import { useGetTournaments } from '../services/tournaments.service';
 import FeesSelector from './feesSelector';
+import MultiRangeSlider from '../components/doubleSlider';
 import './table.css';
 import './tags.css';
-import { compileFunction } from 'vm';
 interface Filter {
     key: string;
     value: any[];
@@ -19,7 +19,8 @@ const filterData = (data: Tournament[], filter: Filter) => {
             case 'sport':
                 return filter.value.includes(item.sport) || filter.value.length === 0;
             case 'ages':
-                return filter.value.some((age: string) => item.age_group.includes(age)) || filter.value.length === 0;
+                return (item.age_group[0] >= filter.value[0] && item.age_group[0] <= filter.value[1]) 
+                        || (item.age_group[1] <= filter.value[1] && item.age_group[1] >= filter.value[0]) ;
             case 'name':
                 return item.name.toLowerCase().includes(String(filter.value).toLowerCase()) || filter.value.length === 0;
             case 'location':
@@ -63,14 +64,10 @@ const TournamentTable: React.FC = () => {
     const [name, setName] = useState('');
     const [sortKey, setSortKey] = useState('');
     const sports = ['Football', 'Basketball', 'Tennis', 'Volleyball'];
-    //TODO: Use range and union range
-    const allAges = ['Under 10', '10-12', '13-15', '16-18', 'Over 18'];
     const allSex = ['Male', 'Female', 'Mixed'];
     const allCategory = ['Professional', 'Amateur-National', 'Amateur-Regional', 'Amateur-District', 'Beginner'];
-    const filterOptions = ['Name', 'Location'];
-    const [filterOption, setFilterOption] = useState(filterOptions[0]);
-    const [selectedFilters, setSelectedFilters] = useState<Filter[]>([{key: 'fees', value: [0, 1000]}]);
-    const [openFilter, setOpenFilter] = useState(false);
+    const [selectedFilters, setSelectedFilters] = useState<Filter[]>([{key: 'fees', value: [0, 1000]}, {key: 'ages', value: [0, 100]}]);
+    const [openFilter, setOpenFilter] = useState(true);
     
 
     useEffect(() => {
@@ -92,7 +89,9 @@ const TournamentTable: React.FC = () => {
         // TODO: Refactor this
         if (name === 'name' || name === 'location' || name === 'start_date' || name === 'end_date') {
             updatedFilters[index].value = [value];
-        } else if (name === 'fees'){
+        }else if (name === 'ages'){
+            updatedFilters[index].value = Object.values(value);
+        }else if (name === 'fees'){
             updatedFilters[index].value = value
         } else if (updatedFilters[index].value.includes(value)) {
             updatedFilters[index].value = updatedFilters[index].value.filter(item => item !== value);
@@ -101,10 +100,8 @@ const TournamentTable: React.FC = () => {
         }
         setSelectedFilters(updatedFilters);
         const filteredData = multiFilterData(allData || [], updatedFilters);
-        console.log('===', updatedFilters)
         setData(filteredData);
     };
-
 
     const handleSort = (key: string) => {
         const sortedData = allData?.sort((a, b) => {
@@ -114,7 +111,6 @@ const TournamentTable: React.FC = () => {
             return a[key as keyof Tournament] && b[key as keyof Tournament] ? a[key as keyof Tournament]! > b[key as keyof Tournament]! ? 1 : -1 : 0;
         });
         setData(sortedData);
-        console.log('sortedData', sortedData)
         setSortKey(key);
     };
 
@@ -124,7 +120,6 @@ const TournamentTable: React.FC = () => {
     };
     
     const filterSports = selectedFilters.find(filter => filter.key === 'sport')?.value || [];
-    const filterages = selectedFilters.find(filter => filter.key === 'ages')?.value || [];
     const filtersex = selectedFilters.find(filter => filter.key === 'sex')?.value || [];
     const filtercategory = selectedFilters.find(filter => filter.key === 'category')?.value || [];
 
@@ -141,7 +136,7 @@ const TournamentTable: React.FC = () => {
                                     <button 
                                         key={sport}
                                         onClick={() => handleFilterChange('sport', sport)}
-                                        style={{ cursor: 'pointer', '--dynamic-color': '#a316fba2'}}
+                                        style={{ cursor: 'pointer', '--dynamic-color': '#a316fba2'} as React.CSSProperties}
                                         className={filterSports.includes(sport) ? 'tagActive' : 'tag'}
                                     >
                                         {sport}
@@ -181,20 +176,15 @@ const TournamentTable: React.FC = () => {
                         </div>
                         <h4>Fees</h4>
                         <FeesSelector onSelect={(min: number, max: number) => handleFilterChange('fees', [min, max])} />
-                        <div>
+                        <div className='ages'>
                             <h4>Age.s</h4>
-                            <ul>
-                                {allAges.map((ages: string) => (
-                                    <button 
-                                        key={ages}
-                                        onClick={() => handleFilterChange('ages', ages)}
-                                        style={{ cursor: 'pointer', '--dynamic-color': '#dda420a2' }}
-                                        className={filterages.includes(ages) ? 'tagActive' : 'tag'}
-                                    >
-                                        {ages}
-                                    </button>
-                                ))}
-                            </ul>
+                            <div style={{margin:'10px'}}>
+                            <MultiRangeSlider
+                                min={0}
+                                max={100}
+                                onChange={(values: number[]) => handleFilterChange('ages', values)}
+                                />
+                            </div>
                         </div>
                         <div>
                             <h4>Sex</h4>
@@ -203,7 +193,7 @@ const TournamentTable: React.FC = () => {
                                     <button 
                                         key={sex}
                                         onClick={() => handleFilterChange('sex', sex)}
-                                        style={{ cursor: 'pointer', '--dynamic-color': '#69ddf5'}}
+                                        style={{ cursor: 'pointer', '--dynamic-color': '#69ddf5' } as React.CSSProperties}
                                         className={filtersex.includes(sex) ? 'tagActive' : 'tag'}
                                     >
                                         {sex}
@@ -218,7 +208,7 @@ const TournamentTable: React.FC = () => {
                                     <button 
                                         key={category}
                                         onClick={() => handleFilterChange('category', category)}
-                                        style={{ cursor: 'pointer', '--dynamic-color': '#6977f5' }}
+                                        style={{ cursor: 'pointer', '--dynamic-color': '#6977f5' } as React.CSSProperties}
                                         className={filtercategory.includes(category) ? 'tagActive' : 'tag'}
                                     >
                                         {category}
@@ -229,7 +219,7 @@ const TournamentTable: React.FC = () => {
                         
                     </div>
                 )}
-                <div>
+                <div style={{minWidth:'700px'}}>
                     <div className='filter'>
                         <input
                             type="text"

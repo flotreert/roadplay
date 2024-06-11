@@ -19,20 +19,18 @@ const sexes = ['Male', 'Female', 'Mixed'];
 interface FormProps {}
 
 const calculateProgress = (values: TournamentDisplay): number => {
-    const { name, sport, sex, age_group, category, start_date, end_date, fees, location, description } = values;
     const totalFields = Object.keys(values).length;
     let filledFields = 0;
-
-    if (name.trim() !== '') filledFields++;
-    if (sport.trim() !== '') filledFields++;
-    if (sex.trim() !== '') filledFields++;
-    if (age_group.length > 0) filledFields++;
-    if (category.trim() !== '') filledFields++;
-    if (start_date.trim() !== '') filledFields++;
-    if (end_date.trim() !== '') filledFields++;
-    if (fees >= 0) filledFields++;
-    if (location.trim() !== '') filledFields++;
-    if (description.trim() !== '') filledFields++;
+    if (values.name.trim() !== '') filledFields++;
+    if (values.sport.trim() !== '') filledFields++;
+    if (values.sex.trim() !== '') filledFields++;
+    if (values.age_group[0] != 0 && values.age_group[1] != 100) filledFields++;
+    if (values.category.trim() !== '') filledFields++;
+    if (values.start_date.trim() !== '') filledFields++;
+    if (values.end_date.trim() !== '') filledFields++;
+    if (values.fees >= 0) filledFields++;
+    if (values.location.trim() !== '') filledFields++;
+    if (values.description.trim() !== '') filledFields++;
     if (values.number_of_teams > 0) filledFields++;
 
     return (filledFields / totalFields) * 100;
@@ -58,7 +56,6 @@ const OrganizeForm: React.FC<FormProps> = () => {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const {name, value} = e.target;
-        console.log(name, value);
         setFormValues({
             ...formValues,
             [name]: value,
@@ -76,21 +73,22 @@ const OrganizeForm: React.FC<FormProps> = () => {
         createTournament(formValues);
     }
 
-    const handleOnChangeAge = (minValue: number, maxValue: number) => {
-        const updatedAgeGroup = [minValue, maxValue];
+    const handleOnChangeAge = (values: any) => {
         setProgressValue(calculateProgress({
             ...formValues,
-            age_group: updatedAgeGroup,
+            age_group: [values.min, values.max],
         }));
         
     }
 
     // Filter age groups based on selected age groups
     return (
-        <div className='grid'>
+        <div>
+
+        <div className='grid-container'>
             <ProgressBar progress={progressValue} />
-            <h1>Organize Tournament</h1>
             <div className='form'>
+            <h1>Organize Tournament</h1>
                 <form onSubmit={onSubmit}>
                     <label>
                         Name
@@ -188,6 +186,7 @@ const OrganizeForm: React.FC<FormProps> = () => {
                     <button type="submit">Submit</button>
                 </form>
             </div>
+        </div>
         </div>
                             
     );
