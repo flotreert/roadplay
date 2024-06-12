@@ -21,6 +21,7 @@ interface FormProps {}
 const calculateProgress = (values: TournamentDisplay): number => {
     const totalFields = Object.keys(values).length;
     let filledFields = 0;
+    console.log(values);
     if (values.name.trim() !== '') filledFields++;
     if (values.sport.trim() !== '') filledFields++;
     if (values.sex.trim() !== '') filledFields++;
@@ -44,7 +45,7 @@ const OrganizeForm: React.FC<FormProps> = () => {
         name: '',
         sport: '', 
         sex: '',
-        age_group: [],
+        age_group: [0, 100],
         category: '',
         start_date: '',
         end_date: '',
@@ -85,38 +86,46 @@ const OrganizeForm: React.FC<FormProps> = () => {
         });
         
     }
-
-    // Filter age groups based on selected age groups
+    //TODO: Add tags for sports, sex and category(maybe a range with the levels of the category)
     return (
-        <div>
-
         <div className='grid-container'>
             <ProgressBar progress={progressValue} />
             <div className='form'>
-            <h1>Organize Tournament</h1>
                 <form onSubmit={onSubmit}>
                     <label>
                         Name
-                        <input type="text" name="name" value={formValues.name} onChange={handleInputChange} required={true} />
+                        <div className='inputs-form'>
+                            <input type="text" name="name" value={formValues.name} onChange={handleInputChange} required={true} />
+                        </div>
+                    </label>
+                    <br/>
+                    <label>
+                        Sport
+                        <div className='inputs-form'>
+                            <select name='sport' value={formValues.sport} onChange={handleInputChange} required={false}>
+                                <option value="" disabled>Select Sport</option>
+                                {sports.map((sport) => (
+                                    <option key={sport} value={sport}>{sport}</option>
+                                ))}
+                            </select>
+                        </div>
                     </label>
                     <label>
                         Sport
-                        <select name='sport' value={formValues.sport} onChange={handleInputChange} required={false}>
-                            <option value="" disabled>Select Sport</option>
-                            {sports.map((sport) => (
-                                <option key={sport} value={sport}>{sport}</option>
-                            ))}
-                        </select>
+                        <div className='inputs-form'>
+                        </div>
                     </label>
                     <br/>
                     <label>
                         Sex
+                        <div className='inputs-form'>
                         <select name='sex' value={formValues.sex} onChange={handleInputChange} required={false}>
                             <option value="" disabled>Select Sex</option>
                             {sexes.map((sex) => (
                                 <option key={sex} value={sex}>{sex}</option>
                             ))}
                         </select>
+                        </div>
                     </label>
                     <br />
                     <label>
@@ -132,55 +141,84 @@ const OrganizeForm: React.FC<FormProps> = () => {
                     <br />
                     <label>
                         Category
-                        <select name='category' value={formValues.category} onChange={handleInputChange} required={false}>
-                            <option value="" disabled>Select Category</option>
-                            {categories.map((category) => (
-                                <option key={category} value={category}>{category}</option>
-                            ))}
-                        </select>
+                        <div className='inputs-form'>
+                            <select name='category' value={formValues.category} onChange={handleInputChange} required={false}>
+                                <option value="" disabled>Select Category</option>
+                                {categories.map((category) => (
+                                    <option key={category} value={category}>{category}</option>
+                                ))}
+                            </select>
+                        </div>
                     </label>
                     <br />
                     <label>
                         Start Date
-                        <input 
-                            name='start_date' 
-                            type="date" 
-                            value={formValues.start_date} 
-                            onChange={handleInputChange} 
-                            required={false} 
-                            min={new Date().toISOString().split('T')[0]} />
+                        <div className='inputs-form'>
+                            <input 
+                                name='start_date' 
+                                type="date" 
+                                value={formValues.start_date} 
+                                onChange={handleInputChange} 
+                                required={false} 
+                                min={new Date().toISOString().split('T')[0]} />
+                        </div>
                     </label>
                     <br />
                     <label>
                         End Date
-                        <input
-                            name='end_date'
-                            type="date"
-                            value={formValues.end_date}
-                            onChange={handleInputChange}
-                            required={false}
-                            min={formValues.start_date}
-                            />
+                        <div className='inputs-form'>
+                            <input
+                                name='end_date'
+                                type="date"
+                                value={formValues.end_date}
+                                onChange={handleInputChange}
+                                required={false}
+                                min={formValues.start_date}
+                                />
+                        </div>
                     </label>
                     <br />
                     <label>
                         Number of Teams
-                        <input name='number_of_teams' type='number' value={formValues.number_of_teams} onChange={handleInputChange} required={false} min={0}/>
+                        <div className='inputs-form'>
+                            <input className='number-slider'
+                                    name='number_of_teams'  
+                                    type='range' 
+                                    min={0} max={299} value={formValues.number_of_teams} 
+                                    onChange={handleInputChange} required={false}/>
+                            <input name='fees' type='number' 
+                                   className='hidden-input' value={formValues.number_of_teams} 
+                                   onChange={handleInputChange} required={false} min={0} max={299}/>
+                        </div>
                     </label>
                     <br />
                     <label>
                         Fees
-                        <input name='fees' type='number' value={formValues.fees} onChange={handleInputChange} required={false} min={0}/>
+                        <div className='inputs-form'>
+                            <input className='number-slider'
+                                    name='fees'  
+                                    type='range' 
+                                    min={0} max={1000} value={formValues.fees} 
+                                    onChange={handleInputChange} required={false}/>
+                            <input name='fees' type='number' 
+                                   className='hidden-input' value={formValues.fees} 
+                                   onChange={handleInputChange} required={false} min={0} max={299}/>
+
+                        </div>
                     </label>
                     <br />
                         <label>
                         Location
-                        <input type='text' name='location' value={formValues.location} onChange={handleInputChange} required={false} />
+                        <div className='inputs-form'>
+                            <input type='text' name='location' value={formValues.location} onChange={handleInputChange} required={false} />
+                        </div>
                     </label>
                     <br/>
                     <label>
                         Description
-                        <textarea name='description' value={formValues.description} onChange={handleInputChange} required={false} />
+                        <div className='inputs-form'>
+                            <textarea name='description' value={formValues.description} onChange={handleInputChange} required={false} />
+                        </div>
                     </label>
                     <br />
                     <label className='conditions'>
@@ -191,7 +229,6 @@ const OrganizeForm: React.FC<FormProps> = () => {
                     <button type="submit">Submit</button>
                 </form>
             </div>
-        </div>
         </div>
                             
     );

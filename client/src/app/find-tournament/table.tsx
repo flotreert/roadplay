@@ -62,7 +62,7 @@ const TournamentTable: React.FC = () => {
     const [data, setData] = useState(allData);
     const [location, setLocation] = useState('');
     const [name, setName] = useState('');
-    const [sortKey, setSortKey] = useState('');
+    const [sortAscending, setSortAscending] = useState(false);
     const sports = ['Football', 'Basketball', 'Tennis', 'Volleyball'];
     const allSex = ['Male', 'Female', 'Mixed'];
     const allCategory = ['Professional', 'Amateur-National', 'Amateur-Regional', 'Amateur-District', 'Beginner'];
@@ -103,15 +103,15 @@ const TournamentTable: React.FC = () => {
         setData(filteredData);
     };
 
-    const handleSort = (key: string) => {
+    const handleFeeSort = () => {
         const sortedData = allData?.sort((a, b) => {
-            if (sortKey === key) {
-                return a[key as keyof Tournament] && b[key as keyof Tournament] ? a[key as keyof Tournament]! > b[key as keyof Tournament]! ? -1 : 1 : 0;
+            if (sortAscending) {
+                return a.fees && b.fees ? a.fees! > b.fees! ? -1 : 1 : 0;
             }
-            return a[key as keyof Tournament] && b[key as keyof Tournament] ? a[key as keyof Tournament]! > b[key as keyof Tournament]! ? 1 : -1 : 0;
+            return a.fees && b.fees ? a.fees! > b.fees! ? 1 : -1 : 0;
         });
         setData(sortedData);
-        setSortKey(key);
+        setSortAscending(!sortAscending);
     };
 
     const handleTournamentClick = (item: Tournament) => {
@@ -234,11 +234,11 @@ const TournamentTable: React.FC = () => {
                             />
                         <div className='filter'>
                             <h6>Sort</h6>
-                            <button className='sort' onClick={() => handleSort('fees')}>fees</button>
+                            <button className='sort' onClick={handleFeeSort}>fees</button>
                         </div>
                     </div>
                     <div className='grid-tournament-container'>
-                        {data?.map((item, index) => (
+                        {data?.map((item) => (
                             <div className='grid-tournament-item' key={item.id} onClick={() => handleTournamentClick(item)}>
                                 <div className='name'>
                                     {item.name}
@@ -252,7 +252,7 @@ const TournamentTable: React.FC = () => {
                                             </div>
                                         );
                                     }
-                                    return null; // Add this line to handle the case when the key is not in columns
+                                    return null;
                                 })}
                             </div>
                         ))}

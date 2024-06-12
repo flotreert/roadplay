@@ -18,13 +18,12 @@ open many terminals:
 - [ ] Protect button with modal login/signup
 - [ ] Refresh token
 - [ ] Third party connexion
+- [ ] Logout 
 - [ ] docker-compose (add postgres) 
 - [ ] Map => openstreetview
 - [x] Refacto Find tournament
-- [x] Age as interval number
 - [ ] Image on server (todo on Google)
 - [ ] Participate to tournament page
-- [ ] size DualRange
 
 
 

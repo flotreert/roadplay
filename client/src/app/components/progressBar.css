@@ -1,20 +1,20 @@
   .barcontainer{
-    margin-top: 110px;
+    margin-top: 10px;
     position: relative;
     transform: translateY(-50%);
     top: -50%;
     width: 50px;
     float: left;
     transform: scaleY(-1);
+    height: auto;
 }
 
 .bar{
     background-color: #add2eb;
     position: absolute;
     bottom: 0;
-    width: 40%;
+    width: 30%;
     border-radius: 40px;
-    height: 100%;
     box-sizing: border-box;
     transition: height 0.5s ease-in-out;
     transform: scaleY(-1);

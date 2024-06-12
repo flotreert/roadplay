@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 50%;
+    width: 100%;
   }
   
 .slider {
@@ -81,7 +81,7 @@ position: relative;
 }
 
 /* For Firefox browsers */
-/* .thumb::-moz-range-thumb {
+.thumb::-moz-range-thumb {
 background-color: #f1f5f7;
 border: none;
 border-radius: 50%;
@@ -92,4 +92,4 @@ width: 18px;
 margin-top: 4px;
 pointer-events: all;
 position: relative;
-} */
+}
