@@ -74,10 +74,15 @@ const OrganizeForm: React.FC<FormProps> = () => {
     }
 
     const handleOnChangeAge = (values: any) => {
+        console.log(values);
         setProgressValue(calculateProgress({
             ...formValues,
             age_group: [values.min, values.max],
         }));
+        setFormValues({
+            ...formValues,
+            age_group: [values.min, values.max],
+        });
         
     }
 
@@ -120,7 +125,7 @@ const OrganizeForm: React.FC<FormProps> = () => {
                             <MultiRangeSlider
                                 min={0}
                                 max={100}
-                                onChange={handleOnChangeAge}
+                                onChange={(values: number[]) => handleOnChangeAge(values) }
                                 />
                             </div>
                     </label>
