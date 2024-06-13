@@ -4,7 +4,7 @@ import { useGetTournaments } from '../services/tournaments.service';
 import FeesSelector from './feesSelector';
 import MultiRangeSlider from '../components/doubleSlider';
 import './table.css';
-import './tags.css';
+import '../components/tags.css';
 interface Filter {
     key: string;
     value: any[];

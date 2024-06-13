@@ -6,6 +6,7 @@ import { TournamentDisplay } from '@/client/types/tournaments';
 import {useCreateTournament} from '../services/tournaments.service';
 
 import './organize.css';
+import '../components/tags.css';
 
 const sports = ['Football', 'Basketball', 'Tennis', 'Volleyball'];
 // TODO: Use range and union range
@@ -54,8 +55,8 @@ const OrganizeForm: React.FC<FormProps> = () => {
         description: '',
         number_of_teams: 0,
     });
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    // TODO: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLButtonElement>
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> | any) => {
         const {name, value} = e.target;
         setFormValues({
             ...formValues,
@@ -86,7 +87,24 @@ const OrganizeForm: React.FC<FormProps> = () => {
         });
         
     }
-    //TODO: Add tags for sports, sex and category(maybe a range with the levels of the category)
+
+    // TODO: Replace by images
+    const colorsSports: {[key: string]: string} = {
+        'Football': '#3a8437',
+        'Basketball': '#b47a05',
+        'Tennis': '#91b803',
+        'Volleyball': '#59c1ed',
+    }
+
+    //TODO: ?maybe do a input range with steps of level
+    const colorsCategory: {[key: string]: string} = {
+        'Professional': '#5160f4',
+        'Amateur-National': '#144a13',
+        'Amateur-Regional': '#1f730a',
+        'Amateur-District': '#207909',
+        'Beginner': '#afb016',
+    }
+
     return (
         <div className='grid-container'>
             <ProgressBar progress={progressValue} />
@@ -102,29 +120,40 @@ const OrganizeForm: React.FC<FormProps> = () => {
                     <label>
                         Sport
                         <div className='inputs-form'>
-                            <select name='sport' value={formValues.sport} onChange={handleInputChange} required={false}>
-                                <option value="" disabled>Select Sport</option>
+                            <ul>
                                 {sports.map((sport) => (
-                                    <option key={sport} value={sport}>{sport}</option>
+                                    <button 
+                                        key={sport}
+                                        type='button'
+                                        value={sport}
+                                        onClick={() => handleInputChange({target: {name: 'sport', value: sport}} as unknown)}
+                                        style={{ cursor: 'pointer', '--dynamic-color': colorsSports[sport]} as React.CSSProperties}
+                                        className={formValues.sport === sport ? 'tagActive' : 'tag'}
+                                    >
+                                        {sport}
+                                    </button>
                                 ))}
-                            </select>
-                        </div>
-                    </label>
-                    <label>
-                        Sport
-                        <div className='inputs-form'>
+                            </ul>
                         </div>
                     </label>
                     <br/>
                     <label>
                         Sex
                         <div className='inputs-form'>
-                        <select name='sex' value={formValues.sex} onChange={handleInputChange} required={false}>
-                            <option value="" disabled>Select Sex</option>
-                            {sexes.map((sex) => (
-                                <option key={sex} value={sex}>{sex}</option>
-                            ))}
-                        </select>
+                            <ul>
+                                {sexes.map((sex) => (
+                                    <button 
+                                        key={sex}
+                                        type='button'
+                                        value={sex}
+                                        onClick={() => handleInputChange({target: {name: 'sex', value: sex}} as unknown)}
+                                        style={{ cursor: 'pointer', '--dynamic-color': '#664dab'} as React.CSSProperties}
+                                        className={formValues.sex === sex ? 'tagActive' : 'tag'}
+                                    >
+                                        {sex}
+                                    </button>
+                                ))}
+                            </ul>
                         </div>
                     </label>
                     <br />
@@ -142,12 +171,20 @@ const OrganizeForm: React.FC<FormProps> = () => {
                     <label>
                         Category
                         <div className='inputs-form'>
-                            <select name='category' value={formValues.category} onChange={handleInputChange} required={false}>
-                                <option value="" disabled>Select Category</option>
+                            
                                 {categories.map((category) => (
-                                    <option key={category} value={category}>{category}</option>
+                                    <button 
+                                        key={category}
+                                        type='button'
+                                        value={category}
+                                        onClick={() => handleInputChange({target: {name: 'category', value: category}} as unknown)}
+                                        style={{ cursor: 'pointer', '--dynamic-color': colorsCategory[category]} as React.CSSProperties}
+                                        className={formValues.category === category ? 'tagActive' : 'tag'}
+                                    >
+                                        {category}
+                                    </button>
                                 ))}
-                            </select>
+                            
                         </div>
                     </label>
                     <br />
@@ -186,7 +223,7 @@ const OrganizeForm: React.FC<FormProps> = () => {
                                     type='range' 
                                     min={0} max={299} value={formValues.number_of_teams} 
                                     onChange={handleInputChange} required={false}/>
-                            <input name='fees' type='number' 
+                            <input name='number_of_teams' type='number' 
                                    className='hidden-input' value={formValues.number_of_teams} 
                                    onChange={handleInputChange} required={false} min={0} max={299}/>
                         </div>

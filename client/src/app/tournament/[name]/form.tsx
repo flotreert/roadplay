@@ -2,7 +2,6 @@ import React, { use, useState } from 'react';
 import { Tournament } from '../../../client/types/tournaments';
 import './form.css';
 import { useFillTournament } from '@/app/services/tournaments.service';
-import { on } from 'events';
 
 // TODO: register who's participating to the tournament
 const ParticipateForm: React.FC<{ tournament: Tournament, onRefetch: () => void }> = ({ tournament, onRefetch }) => {

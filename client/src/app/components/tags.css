@@ -11,10 +11,11 @@
 .tagActive {
     padding: 5px 20px;
     background-color: var(--dynamic-color);
-    opacity: 2;
+    opacity: 0.8;
     border-radius: 10px;
     cursor: pointer;
     margin: 3px;
+    transform: scale(1.1);
 }
 
 .tag {
@@ -22,10 +23,10 @@
     background-color: var(--dynamic-color);
     opacity: 0.8;
     color: #fff;
-    border: none;
     border-radius: 10px;
     cursor: pointer;
-    margin: 3px;
+    margin: 4px;
+    border-color: transparent;
 }
 
 

@@ -37,7 +37,8 @@ export default function TournamentDetails() {
         );
     }
     
-    
+    // TODO: Get participants age and check if it matches the tournament age group
+    // TODO: Distance to user position
     return (
         <main>
             <div style={{maxWidth:'400px'}}>
@@ -50,10 +51,10 @@ export default function TournamentDetails() {
                 <p>{selectedTournament.location}</p>
                 <p>{selectedTournament.sex}</p>
                 <p>{selectedTournament.category}</p>
-                <p>{selectedTournament.age_group}</p>
+                <p>from {selectedTournament.age_group[0]} to {selectedTournament.age_group[1]} years old</p>
                 <p>{selectedTournament.fees}$</p>
             </div>
             <ParticipateForm tournament={selectedTournament} onRefetch={handleRefetch} />
-            </main>
+        </main>
     );
 };
