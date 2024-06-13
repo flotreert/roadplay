@@ -20,7 +20,7 @@ class Tournament(db.Base):
     end_date = sa.Column(sa.Date(), nullable=True)
     location = sa.Column(sa.String(255), nullable=True)
     organizer_id = sa.Column(sa.Integer, nullable=True)
-    age_group = sa.Column(sa.ARRAY(sa.String(255)), nullable=True)
+    age_group = sa.Column(sa.ARRAY(sa.Integer), nullable=True)
     sport = sa.Column(sa.String(255), nullable=True)
     category = sa.Column(sa.String(255), nullable=True)
     sex = sa.Column(sa.String(255), nullable=True)

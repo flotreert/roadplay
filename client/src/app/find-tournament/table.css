@@ -1,49 +1,25 @@
-/* table.css */
-
-/* Styles for the table */
-table {
-    width: 100%;
-    border-collapse: collapse;  
-    border-radius: 5px;
-    padding: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Styles for table headers */
-th {
-    background-color: #f2f2f2;
-    color: #333;
-    font-weight: bold;
-    padding: 20px;
-    text-align: left;
-}
-
-/* Styles for table cells */
-td {
-    padding: 20px;
-    border-bottom: 1px solid #ccc;
-}
-
-/* Styles for alternate rows */
-tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
 .filter{
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    align-items: center;
+    margin-bottom: 2px;
+    height: 40px;
 
 }
 
-.filter-input{
-    width: 100%;
+.filet .search-input{
+    width: 1px
+}
+
+.search-input{
+    width: auto;
     padding: 5px 20px;
     margin: 8px 0;
     display: inline-block;
     border: 1px solid #ccc;
     box-sizing: border-box;
     border-radius: 5px;
+    height: 10 px;
 }
 
 .select-filter{
@@ -54,6 +30,17 @@ tr:nth-child(even) {
     border: 1px solid #ccc;
     box-sizing: border-box;
     border-radius: 5px;
+}
+
+.sort{
+    width: auto;
+    padding: 5px 20px;
+    margin: 8px 3px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .title{
@@ -78,3 +65,86 @@ tr:nth-child(even) {
 tr:hover {
     cursor: pointer;
 }
+
+.filterTags {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+
+}
+
+.grid-container{
+    display: flex;
+    grid-template-columns: 2fr 2fr;
+    grid-gap: 10px;
+    border-color: rgb(153, 227, 16);
+    flex-direction: row;
+}
+
+.grid-item-filter{
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    max-width: 300px
+}
+
+.filter-button{
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: rgb(173, 157, 251);
+    margin-bottom: 20px;
+}
+
+
+input[type="date"] {
+    padding: 5px 2px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+
+input[type="range"]{
+    width: 100%;
+}
+
+.ages{
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    font-size: large;
+    margin: 20px;
+    justify-content: space-between;
+    padding: 0 0;
+    margin: 0 3;
+}
+
+
+.grid-tournament-container {
+    margin-left: 25px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;  
+    width: 90%;
+    flex-direction: horizontal;
+    justify-content: space-between;
+  }
+.grid-tournament-item {
+    margin: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); 
+    border-radius: 10px;
+    padding: 5px;
+    min-width: 250px;
+    cursor: pointer;
+    
+}
+.grid-tournament-item:hover {
+    transform: scale(1.1);
+    background-color: #e6e3e3;
+}
+.name {
+    font-weight: 650;
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+  }

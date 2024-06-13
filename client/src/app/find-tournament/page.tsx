@@ -14,7 +14,6 @@ const FindTournaments: React.FC  = () => {
 
     return (
         <main>
-            <h1>Find Tournaments</h1>
             <div className='change-view'>
                 <label style={{fontSize:'x-large'}}>Map</label>
                 <SwitchContainer>

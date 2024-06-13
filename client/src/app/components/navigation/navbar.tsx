@@ -73,7 +73,7 @@ const Navbar = () => {
         <div className="navbar-connect">
           {AuthToken() ? (
             <div>
-              <p>Welcome, logged in {authToken}</p>
+              <p>Welcome, logged in </p>
             </div>
           ) : (
             <div>

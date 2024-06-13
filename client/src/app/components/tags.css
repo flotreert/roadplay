@@ -1,0 +1,32 @@
+
+:root{
+    --dynamic-color: #6977f5;
+}
+.tag:hover {
+    background-color: var(--dynamic-color);
+    opacity: 0.5;
+}
+
+
+.tagActive {
+    padding: 5px 20px;
+    background-color: var(--dynamic-color);
+    opacity: 0.8;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 3px;
+    transform: scale(1.1);
+}
+
+.tag {
+    padding: 5px 20px;
+    background-color: var(--dynamic-color);
+    opacity: 0.8;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 4px;
+    border-color: transparent;
+}
+
+

@@ -121,9 +121,9 @@ export class TournamentsService {
      * @returns unknown Successful Response
      * @throws ApiError
      */
-    public static fillTournamentTournamentsTournamentIdFillPost(data: $OpenApiTs['/tournaments/{tournament_id}/fill']['post']['req']): CancelablePromise<$OpenApiTs['/tournaments/{tournament_id}/fill']['post']['res'][200]> {
+    public static fillTournamentTournamentsTournamentIdFillPut(data: $OpenApiTs['/tournaments/{tournament_id}/fill']['put']['req']): CancelablePromise<$OpenApiTs['/tournaments/{tournament_id}/fill']['put']['res'][200]> {
         return __request(client, {
-            method: 'POST',
+            method: 'PUT',
             url: '/tournaments/{tournament_id}/fill',
             path: {
                 tournament_id: data.tournamentId
@@ -141,9 +141,9 @@ export class TournamentsService {
      * @returns unknown Successful Response
      * @throws ApiError
      */
-    public static removeTeamTournamentsTournamentIdRemoveTeamPost(data: $OpenApiTs['/tournaments/{tournament_id}/remove_team']['post']['req']): CancelablePromise<$OpenApiTs['/tournaments/{tournament_id}/remove_team']['post']['res'][200]> {
+    public static removeTeamTournamentsTournamentIdRemoveTeamPut(data: $OpenApiTs['/tournaments/{tournament_id}/remove_team']['put']['req']): CancelablePromise<$OpenApiTs['/tournaments/{tournament_id}/remove_team']['put']['res'][200]> {
         return __request(client, {
-            method: 'POST',
+            method: 'PUT',
             url: '/tournaments/{tournament_id}/remove_team',
             path: {
                 tournament_id: data.tournamentId

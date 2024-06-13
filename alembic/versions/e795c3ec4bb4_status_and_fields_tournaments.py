@@ -29,7 +29,7 @@ def upgrade() -> None:
     sa.Column('end_date', sa.Date(), nullable=True),
     sa.Column('location', sa.String(length=255), nullable=True),
     sa.Column('organizer_id', sa.Integer(), nullable=True),
-    sa.Column('age_group', sa.ARRAY(sa.String(length=255)), nullable=True),
+    sa.Column('age_group', sa.ARRAY(sa.Integer()), nullable=True),
     sa.Column('sport', sa.String(length=255), nullable=True),
     sa.Column('sex', sa.String(length=255), nullable=True),
     sa.Column('category', sa.String(length=255), nullable=True),

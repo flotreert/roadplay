@@ -1,31 +1,88 @@
+.grid-container{
+    display: flex;
+    grid-gap: 10px;
+    flex-direction: row;
+    margin-bottom: 40px;
+}
 
-/* Styling for input */
-input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    font-size: large;
-    margin: 10px;
-    width: 95%;
+.form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
 
 }
-/* Styling for input[type="date"] */
-input[type="date"] {    
-    font-size: large;
-    font-family: 'Courier New', Courier, monospace;
-    background-color: rgb(235, 235, 235)
+
+.inputs-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+/* Styling for inputs*/
+
+input{
+    width: 100%;
 }
 
 input[type="text"] {    
     font-size: large;
     background-color: rgb(235, 235, 235);
-    padding: 10px;
+    padding: 10px 0px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: large;
+    margin: 10px;
 }
+
+input[type="date"] {    
+    font-size: large;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: rgb(235, 235, 235);
+    padding: 10px 0px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: large;
+    margin: 10px;
+}
+
+
 
 input[type="number"] {    
     font-size: large;
-    background-color: rgb(235, 235, 235)
+    background-color: transparent;
+    padding: 10px 0px;
+    /* border: 1px solid #ccc; */
+    border-radius: 10px;
+    font-size: large;
+    margin: 10px;
+    text-align: center;
 }
+
+input[type="checkbox"]{
+    width: 100%;
+    margin: 5 0;
+    padding: 0 0;
+    justify-content: right;
+    border: 1px solid #ccc;
+    margin: 10px;
+    width: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: large;
+    margin: 10px;
+}
+
+input[type="range"]{
+    width: 100%;
+    cursor: pointer;
+    
+}
+
 /* Styling for select bar */
 select {
     padding: 10px;
@@ -37,24 +94,22 @@ select {
     margin: 15px 10px;
 }
 
-/* Styling for button */
-
 
 textarea {
     display: flex;
     flex-direction: column;
     align-items: left;
     justify-content: space-between;
-    max-width: 100%;
-    width:100%;
+    width: 100%	;
     background-color: rgb(235, 235, 235);
     border: 1px solid #ccc;
     font-size: large;
-    font-family: 'Courier New', Courier, monospace;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     border-radius: 10px;
     margin-top: 2px;
-    padding: 5px 5px;
-
+    padding: 5px 0px;
+    resize:vertical;
+    
 }
 
 form {
@@ -111,12 +166,12 @@ form {
 .ages{
     display: flex;
     flex-direction: column;
-    align-items: left;
+    align-items: center;
     font-size: large;
-    margin: 1px;
-    justify-content: space-between;
+    margin: 20px;
+    justify-content: center;
     padding: 0 0;
-    margin: 0 0;
+    margin: 0 3;
 }
 
 .conditions{
@@ -129,12 +184,66 @@ form {
     justify-items: left;
 }
 
-input[type="checkbox"]{
+
+
+/* For slider range */
+.number-slider {
+    overflow: hidden;
+    width: 5px;
+    height: 5px;
+    border-radius: 3px;
+    -webkit-appearance: none;
+    background-color: #7c9cf4;
+    justify-content: center;
+    align-items: center;
+  }
+  
+.number-slider::-webkit-slider-runnable-track {
+    height: 10px;
+    -webkit-appearance: none;
+    color: #13bba4;
+    margin-top: -1px;
+  }
+  
+.number-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    background-color: #2ce2c4;
+    box-shadow: 0 0 1px 1px #ced4da;
+    cursor: pointer;
+    height: 18px;
+    width: 10px;
+    margin-top: 1px;
+    pointer-events: all;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+  }
+
+input[type="range"]::-moz-range-progress {
+background-color: #43e5f7; 
+}
+input[type="range"]::-moz-range-track {  
+background-color: #9a905d;
+}
+
+.hidden-input{
+    width: auto;
+    background-color: none;
+    padding: 0px 0px;
+    border: none;
+}
+
+
+/* Submit button*/
+button[type="submit"] {
     width: 100%;
-    margin: 5 0;
-    padding: 0 0;
-    justify-content: right;
-    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: large;
     margin: 10px;
-    width: 20px;
+    cursor: pointer;
 }
