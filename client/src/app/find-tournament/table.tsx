@@ -5,6 +5,7 @@ import FeesSelector from './feesSelector';
 import MultiRangeSlider from '../components/doubleSlider';
 import './table.css';
 import '../components/tags.css';
+import Image from 'next/image';
 interface Filter {
     key: string;
     value: any[];
@@ -14,7 +15,6 @@ const filterData = (data: Tournament[], filter: Filter) => {
     return data.filter(item => {
         switch (filter.key) {
             case 'fees':
-                console.log('fees', filter.value[0], filter.value[1])
                 return (item.fees >= filter.value[0] && item.fees <= filter.value[1]);
             case 'sport':
                 return filter.value.includes(item.sport) || filter.value.length === 0;
@@ -48,12 +48,25 @@ const multiFilterData = (data: Tournament[], filters: Filter[]) => {
 }
 
 
+function convertBinaryToDataURI(bytes: string) {
+    const byteCharacters = atob(bytes);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: 'image/jpeg' });
+    const dataURI = URL.createObjectURL(blob);
+    return dataURI;
+}
+
 const columns = {
     name: 'Name',
     start_date: 'Start Date',
     location: 'Location',
     fees: 'Fees',
     number_of_teams: 'Teams',
+    images: 'Images',
 } 
 
 const TournamentTable: React.FC = () => {
@@ -243,8 +256,13 @@ const TournamentTable: React.FC = () => {
                                 <div className='name'>
                                     {item.name}
                                 </div>
+                                <div className='name'>
+                                    {item.images && item.images.length > 0 && 
+                                    <Image src={convertBinaryToDataURI(item.images[0])} alt={item.name} width={120} height={120}/>
+                                    }
+                                </div>
                                 {Object.entries(item).map(([key, value]) => {
-                                    if (key !== 'name' && key in columns) {
+                                    if (key !== 'name' && key!== 'images' && key in columns) {
                                         return (
                                             <div key={key}>
                                                 <h6>{columns[key as keyof typeof columns]}</h6>

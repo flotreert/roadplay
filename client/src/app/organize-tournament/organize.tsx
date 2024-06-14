@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import Image from "next/image";
 import ProgressBar from '../components/progressBar';
 import MultiRangeSlider from '../components/doubleSlider';
 import { TournamentDisplay } from '@/client/types/tournaments';
@@ -16,13 +17,11 @@ const sexes = ['Male', 'Female', 'Mixed'];
 
 
 
-
 interface FormProps {}
 
 const calculateProgress = (values: TournamentDisplay): number => {
     const totalFields = Object.keys(values).length;
     let filledFields = 0;
-    console.log(values);
     if (values.name.trim() !== '') filledFields++;
     if (values.sport.trim() !== '') filledFields++;
     if (values.sex.trim() !== '') filledFields++;
@@ -35,9 +34,22 @@ const calculateProgress = (values: TournamentDisplay): number => {
     if (values.description.trim() !== '') filledFields++;
     if (values.number_of_teams > 0) filledFields++;
 
-    return (filledFields / totalFields) * 100;
+    return (filledFields / (totalFields-1)) * 100;
 };
 
+
+function convertDataURIToBinary(dataURI: any) {
+        var base64Index = dataURI.indexOf(';base64,') + ';base64,'.length;
+        var base64 = dataURI.substring(base64Index);
+        var raw = window.atob(base64);
+        var rawLength = raw.length;
+        var array = new Uint8Array(new ArrayBuffer(rawLength));
+    
+        for(let i = 0; i < rawLength; i++) {
+            array[i] = raw.charCodeAt(i);
+        }
+        return array;
+    }
 
 const OrganizeForm: React.FC<FormProps> = () => {
     const [progressValue, setProgressValue] = useState<number>(0);
@@ -76,7 +88,6 @@ const OrganizeForm: React.FC<FormProps> = () => {
     }
 
     const handleOnChangeAge = (values: any) => {
-        console.log(values);
         setProgressValue(calculateProgress({
             ...formValues,
             age_group: [values.min, values.max],
@@ -85,6 +96,31 @@ const OrganizeForm: React.FC<FormProps> = () => {
             ...formValues,
             age_group: [values.min, values.max],
         });
+        
+    }
+
+
+    const [file, setFile] = useState<File | null>(null);
+    const handleOnChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const fileInput = document?.querySelector('input[type=file]') as HTMLInputElement;
+        const file = fileInput?.files?.[0];
+        setFile(file || null);
+        const reader = new FileReader();
+        let byteArray;
+        reader.addEventListener("loadend", function () {
+            // convert image file to base64 string
+            byteArray = convertDataURIToBinary(reader.result as string);
+            if (reader.result){
+                setFormValues({
+                    ...formValues,
+                    images: [reader.result],
+                });
+            }
+        }, false);
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+        
         
     }
 
@@ -113,7 +149,7 @@ const OrganizeForm: React.FC<FormProps> = () => {
                     <label>
                         Name
                         <div className='inputs-form'>
-                            <input type="text" name="name" value={formValues.name} onChange={handleInputChange} required={true} />
+                            <input type="text" name="name" value={formValues.name} onChange={handleInputChange} required={false} />
                         </div>
                     </label>
                     <br/>
@@ -235,11 +271,11 @@ const OrganizeForm: React.FC<FormProps> = () => {
                             <input className='number-slider'
                                     name='fees'  
                                     type='range' 
-                                    min={0} max={1000} value={formValues.fees} 
+                                    min={0} max={500} value={formValues.fees} 
                                     onChange={handleInputChange} required={false}/>
                             <input name='fees' type='number' 
                                    className='hidden-input' value={formValues.fees} 
-                                   onChange={handleInputChange} required={false} min={0} max={299}/>
+                                   onChange={handleInputChange} required={false} min={0} max={1000}/>
 
                         </div>
                     </label>
@@ -258,9 +294,22 @@ const OrganizeForm: React.FC<FormProps> = () => {
                         </div>
                     </label>
                     <br />
-                    <label className='conditions'>
-                        <input className='conditions' type="checkbox" required={false} />
-                        I agree to the terms and conditions
+                    <label>
+                        Image
+                        <div className='inputs-form'>
+                            <div className='custom-file-button'>
+                                <label htmlFor="inputGroupFile" className='upload'>+</label>
+                                <input type="file" name="images" accept=".jpg, .png" onChange={handleOnChangeImage} id="inputGroupFile"/>
+                            </div>
+                            <section>
+                                {file && (
+                                    <div>
+                                        <Image src={URL.createObjectURL(file)} alt="Selected" width={150} height={150}/>
+                                    </div>
+                                )}
+                            </section>
+
+                        </div>
                     </label>
                     <br />
                     <button type="submit">Submit</button>

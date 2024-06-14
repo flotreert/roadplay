@@ -1,4 +1,6 @@
+"""Schemas for tournaments"""
 import datetime
+import io
 
 import pydantic
 
@@ -27,25 +29,32 @@ class Tournament(TournamentBase):
     number_of_teams: int
     description: str
     participants: list[int]
+    images: list[str]
 
     model_config = pydantic.ConfigDict(from_attributes=True)
 
 
 class TournamentDisplay(pydantic.BaseModel):
     """Tournament display model, lighter version of Tournament model"""
-    name: str | None = None
-    sex: str | None = None
-    start_date: datetime.date | None = None   #change to date
-    end_date: datetime.date | None = None  #change to date
-    location: str | None = None
-    sport: str | None = None
-    age_group: tuple[int, int] = []
-    category: str | None = None
-    fees: int | None = None
-    number_of_teams: int | None = None
-    description: str | None = None
+    name: str
+    sex: str
+    start_date: datetime.date  #change to date
+    end_date: datetime.date  #change to date
+    location: str
+    sport: str
+    age_group: tuple[int, int]
+    category: str
+    fees: int
+    number_of_teams: int
+    description: str
+    images: list[bytes]
+
+    model_config = pydantic.ConfigDict(
+        from_attributes=True,
+    )
 
 
 class TournamentCreate(TournamentDisplay):
     """Tournament create model"""
     organizer_id: int
+    images: list[str] | None = None

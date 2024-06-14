@@ -76,18 +76,25 @@ export class TournamentsService {
     
     /**
      * Update Tournament
+     * Update a tournament
+     * Args:
+     * tournament_id (int): Tournament ID
+     * db (orm.Session): Database session
      * @param data The data for the request.
      * @param data.tournamentId
+     * @param data.requestBody
      * @returns unknown Successful Response
      * @throws ApiError
      */
-    public static updateTournamentTournamentsTournamentIdPut(data: $OpenApiTs['/tournaments/{tournament_id}']['put']['req']): CancelablePromise<$OpenApiTs['/tournaments/{tournament_id}']['put']['res'][200]> {
+    public static updateTournamentTournamentsTournamentIdPatch(data: $OpenApiTs['/tournaments/{tournament_id}']['patch']['req']): CancelablePromise<$OpenApiTs['/tournaments/{tournament_id}']['patch']['res'][200]> {
         return __request(client, {
-            method: 'PUT',
+            method: 'PATCH',
             url: '/tournaments/{tournament_id}',
             path: {
                 tournament_id: data.tournamentId
             },
+            body: data.requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: 'Validation Error'
             }

@@ -1,4 +1,6 @@
 """Tournament Manager API"""
+import logging
+
 import fastapi
 from fastapi.middleware.cors import CORSMiddleware
 import sqlalchemy.orm as orm
@@ -7,6 +9,15 @@ from core.tournaments_manager import db as tournaments_db
 from core.tournaments_manager import schemas
 from common import db as db_lib
 from common import auth as auth_lib
+from common import images
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    filename='app.log',
+    filemode='a',
+    format='%(asctime)s - %(levelname)s - %(message)s',
+)
+logger = logging.getLogger(__name__)
 
 app = fastapi.FastAPI(
     title='Tournament Manager API',
@@ -47,8 +58,11 @@ def get_tournaments(
     Returns:
         list[schemas.Tournament]: List of tournaments
     """
-    return tournaments_db.get_tournaments(session=sess)
-
+    #TODO: Figure out how to get images
+    tournaments = tournaments_db.get_tournaments(session=sess)
+    for tournament in tournaments:
+        tournament.images = [images.upload(image) for image in tournament.images]
+    return tournaments
 
 @app.get('/tournaments/{tournament_id}')
 def get_tournament(
@@ -62,7 +76,10 @@ def get_tournament(
     Returns:
         schemas.Tournament: Tournament object
     """
-    return tournaments_db.get_tournament_by_id(db, tournament_id)
+
+    tournament = tournaments_db.get_tournament_by_id(db, tournament_id)
+    tournament.images = [images.upload(image) for image in tournament.images]
+    return tournament
 
 
 @app.post('/tournaments')
@@ -79,13 +96,16 @@ def create_tournament(
     Returns:
         dict: Success message
     """
+    #Download data if needed
+    if schema.images:
+        schema.images = [images.download(image) for image in schema.images]
     tournament = schemas.TournamentCreate(organizer_id=organizer_id,
                                           **schema.model_dump())
     tournaments_db.add_tournament(db, tournament)
-    return {'message': 'Tournament created!'}
+    return {'message': f'Tournament created! {schema.images}'}
 
 
-@app.put('/tournaments/{tournament_id}')
+@app.patch('/tournaments/{tournament_id}')
 def update_tournament(tournament_id: int,
                       schema: schemas.TournamentDisplay,
                       db: orm.Session = fastapi.Depends(db_lib.get_db),

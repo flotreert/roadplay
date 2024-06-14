@@ -3,13 +3,26 @@ import React from 'react';
 import {useEffect, useState} from 'react';
 import { usePathname } from 'next/navigation';
 import { useGetTournament } from '@/app/services/tournaments.service';
-import ProgressBar from '@/app/components/progressBar';
+import ProgressBarHor from '@/app/components/progressBarHor';
 import { Tournament } from '../../../client/types/tournaments';
 import ParticipateForm from './form';
+import Image from 'next/image';
 
 const calculateFilling = (tournament: Tournament) => {
     return Math.floor(tournament.participants.length / tournament.number_of_teams * 100);
 };
+function convertBinaryToDataURI(bytes: string) {
+    const byteCharacters = atob(bytes);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: 'image/jpeg' });
+    const dataURI = URL.createObjectURL(blob);
+    return dataURI;
+}
+
 
 export default function TournamentDetails() {
     const route = usePathname();
@@ -43,16 +56,23 @@ export default function TournamentDetails() {
         <main>
             <div style={{maxWidth:'400px'}}>
                 <h1>{selectedTournament.name}</h1>
+                <div>
+                        {selectedTournament.images && selectedTournament.images.length > 0 && 
+                                    <Image src={convertBinaryToDataURI(selectedTournament.images[0])} alt={selectedTournament.name} width={180} height={180}/>
+                                    }
+                </div>
                 
-                Participants: 
-                <ProgressBar progress={calculateFilling(selectedTournament)} />
+                <div>
+                Participants:
+                <ProgressBarHor progress={calculateFilling(selectedTournament)} />
+                </div>
+                <p>{selectedTournament.fees}$</p>
                 <p>From {selectedTournament.start_date} to {selectedTournament.end_date}</p>
-                <p>{selectedTournament.description}</p>
                 <p>{selectedTournament.location}</p>
                 <p>{selectedTournament.sex}</p>
                 <p>{selectedTournament.category}</p>
                 <p>from {selectedTournament.age_group[0]} to {selectedTournament.age_group[1]} years old</p>
-                <p>{selectedTournament.fees}$</p>
+                <p>{selectedTournament.description}</p>
             </div>
             <ParticipateForm tournament={selectedTournament} onRefetch={handleRefetch} />
         </main>

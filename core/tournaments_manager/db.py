@@ -122,6 +122,7 @@ def fill_tournament(
     participants = list(tournament.participants)
     participants.append(user_id)
     tournament.participants = participants.copy()
+    #FIXME: check if the tournament is full
     if len(tournament.participants) == tournament.number_of_teams:
         tournament.is_full = True
     session.commit()
