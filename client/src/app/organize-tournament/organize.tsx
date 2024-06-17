@@ -11,9 +11,8 @@ import '../components/tags.css';
 
 const sports = ['Football', 'Basketball', 'Tennis', 'Volleyball'];
 // TODO: Use range and union range
-const ageGroups = ['Under 10', '10-12', '13-15', '16-18', 'Over 18'];
 const categories = ['Professional', 'Amateur-National', 'Amateur-Regional', 'Amateur-District', 'Beginner'];
-const sexes = ['Male', 'Female', 'Mixed'];
+const sexes = ['Female', 'Male', 'Mixed'];
 
 
 
@@ -84,7 +83,8 @@ const OrganizeForm: React.FC<FormProps> = () => {
 
     const onSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
         event.preventDefault();
-        createTournament(formValues);
+        createTournament(formValues)
+        
     }
 
     const handleOnChangeAge = (values: any) => {
@@ -125,6 +125,13 @@ const OrganizeForm: React.FC<FormProps> = () => {
     }
 
     // TODO: Replace by images
+    const imageSports: {[key: string]: string} = {
+        'Football': '/football.png',
+        'Basketball': '/basketball.png',
+        'Tennis': '/tennis.png',
+        'Volleyball': '/volleyball.png',
+    }
+
     const colorsSports: {[key: string]: string} = {
         'Football': '#3a8437',
         'Basketball': '#b47a05',
@@ -140,7 +147,7 @@ const OrganizeForm: React.FC<FormProps> = () => {
         'Amateur-District': '#207909',
         'Beginner': '#afb016',
     }
-
+    console.log(formValues)
     return (
         <div className='grid-container'>
             <ProgressBar progress={progressValue} />
@@ -155,7 +162,7 @@ const OrganizeForm: React.FC<FormProps> = () => {
                     <br/>
                     <label>
                         Sport
-                        <div className='inputs-form'>
+                        <div className='inputs-form-line'>
                             <ul>
                                 {sports.map((sport) => (
                                     <button 
@@ -164,9 +171,9 @@ const OrganizeForm: React.FC<FormProps> = () => {
                                         value={sport}
                                         onClick={() => handleInputChange({target: {name: 'sport', value: sport}} as unknown)}
                                         style={{ cursor: 'pointer', '--dynamic-color': colorsSports[sport]} as React.CSSProperties}
-                                        className={formValues.sport === sport ? 'tagActive' : 'tag'}
+                                        className={formValues.sport === sport ? 'sport-button-validate' : 'sport-button'}
                                     >
-                                        {sport}
+                                        <Image src={imageSports[sport]} alt={sport} width={45} height={45} />
                                     </button>
                                 ))}
                             </ul>

@@ -16,7 +16,7 @@ const actions = {createTournament: ()  => ({
         mutationFn: (id: number) => TournamentsService.fillTournamentTournamentsTournamentIdFillPut({tournamentId: id}),
         mutationKey: ['fillTournament', 'fill'],
         onSuccess: () => {
-            console.log('Tournament filled successfully');
+            window.alert('Tournament filled successfully');
         },
         onError: (error: any) => {
             window.alert('Error filling tournament' + error);

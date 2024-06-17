@@ -24,6 +24,7 @@ open many terminals:
 - [x] Refacto Find tournament
 - [ ] Image on server (todo on Google)
 - [ ] Participate to tournament page
+- [ ] LRU cache for same inputs 
 
 
 

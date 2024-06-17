@@ -62,10 +62,6 @@
 
 /* Table row styles */
 
-tr:hover {
-    cursor: pointer;
-}
-
 .filterTags {
     display: flex;
     flex-direction: row;
@@ -121,30 +117,3 @@ input[type="range"]{
 }
 
 
-.grid-tournament-container {
-    margin-left: 25px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;  
-    width: 90%;
-    flex-direction: horizontal;
-    justify-content: space-between;
-  }
-.grid-tournament-item {
-    margin: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); 
-    border-radius: 10px;
-    padding: 5px;
-    min-width: 250px;
-    cursor: pointer;
-    
-}
-.grid-tournament-item:hover {
-    transform: scale(1.1);
-    background-color: #e6e3e3;
-}
-.name {
-    font-weight: 650;
-    display: flex;
-    justify-content: center;
-    margin: 10px;
-  }

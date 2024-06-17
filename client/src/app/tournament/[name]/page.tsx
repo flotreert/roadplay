@@ -64,7 +64,8 @@ export default function TournamentDetails() {
                 
                 <div>
                 Participants:
-                <ProgressBarHor progress={calculateFilling(selectedTournament)} />
+                {/* <ProgressBarHor progress={calculateFilling(selectedTournament)} /> */}
+                <ProgressBarHor progress={30} />
                 </div>
                 <p>{selectedTournament.fees}$</p>
                 <p>From {selectedTournament.start_date} to {selectedTournament.end_date}</p>

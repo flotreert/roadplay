@@ -3,9 +3,9 @@ import { Tournament } from '../../client/types/tournaments';
 import { useGetTournaments } from '../services/tournaments.service';
 import FeesSelector from './feesSelector';
 import MultiRangeSlider from '../components/doubleSlider';
+import TournamentList from './tournament';
 import './table.css';
 import '../components/tags.css';
-import Image from 'next/image';
 interface Filter {
     key: string;
     value: any[];
@@ -47,27 +47,6 @@ const multiFilterData = (data: Tournament[], filters: Filter[]) => {
 );
 }
 
-
-function convertBinaryToDataURI(bytes: string) {
-    const byteCharacters = atob(bytes);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: 'image/jpeg' });
-    const dataURI = URL.createObjectURL(blob);
-    return dataURI;
-}
-
-const columns = {
-    name: 'Name',
-    start_date: 'Start Date',
-    location: 'Location',
-    fees: 'Fees',
-    number_of_teams: 'Teams',
-    images: 'Images',
-} 
 
 const TournamentTable: React.FC = () => {
     const { data: allData } = useGetTournaments();
@@ -250,31 +229,7 @@ const TournamentTable: React.FC = () => {
                             <button className='sort' onClick={handleFeeSort}>fees</button>
                         </div>
                     </div>
-                    <div className='grid-tournament-container'>
-                        {data?.map((item) => (
-                            <div className='grid-tournament-item' key={item.id} onClick={() => handleTournamentClick(item)}>
-                                <div className='name'>
-                                    {item.name}
-                                </div>
-                                <div className='name'>
-                                    {item.images && item.images.length > 0 && 
-                                    <Image src={convertBinaryToDataURI(item.images[0])} alt={item.name} width={120} height={120}/>
-                                    }
-                                </div>
-                                {Object.entries(item).map(([key, value]) => {
-                                    if (key !== 'name' && key!== 'images' && key in columns) {
-                                        return (
-                                            <div key={key}>
-                                                <h6>{columns[key as keyof typeof columns]}</h6>
-                                                {value}
-                                            </div>
-                                        );
-                                    }
-                                    return null;
-                                })}
-                            </div>
-                        ))}
-                    </div>
+                    <TournamentList tournaments={data || []} onClick={handleTournamentClick}/>
                 </div>
             </div>
         </div>

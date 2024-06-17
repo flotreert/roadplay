@@ -7,10 +7,11 @@ interface ProgressBarProps {
 
 
 const ProgressBarHor: React.FC<ProgressBarProps> = ({ progress }) => {    
-    const formatedProgress = progress || 0 ;
+    const formatedProgress = isNaN(progress) ? 0 : progress;
     return (
         <div className='container'>
-          <div className='filler' style={{ width: `${formatedProgress}%` }}>
+          <div className='filler' style={{ width: `${formatedProgress}%`, 
+                                  backgroundColor:  Math.round(progress) > 85 ? '#d27122' : '#4caf50'}}>
           </div>
           <span className='style'>{`${Math.round(progress)}%`}</span>
         </div>
