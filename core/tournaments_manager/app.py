@@ -1,23 +1,16 @@
 """Tournament Manager API"""
-import logging
-
 import fastapi
 from fastapi.middleware.cors import CORSMiddleware
 import sqlalchemy.orm as orm
 
 from core.tournaments_manager import db as tournaments_db
 from core.tournaments_manager import schemas
-from common import db as db_lib
 from common import auth as auth_lib
+from common import db as db_lib
+from common import custom_logging
 from common import images
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    filename='app.log',
-    filemode='a',
-    format='%(asctime)s - %(levelname)s - %(message)s',
-)
-logger = logging.getLogger(__name__)
+logger = custom_logging.custom_logging(__name__)
 
 app = fastapi.FastAPI(
     title='Tournament Manager API',

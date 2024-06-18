@@ -14,6 +14,7 @@ class User(db.Base):
     current_tournaments = sa.Column(sa.ARRAY(sa.Integer), nullable=True)
     futur_tournaments = sa.Column(sa.ARRAY(sa.Integer), nullable=True)
     organizer_tournaments = sa.Column(sa.ARRAY(sa.Integer), nullable=True)
+    # TODO: Add teams 
 
     def __repr__(self):
         return f'<user={self.username}>'

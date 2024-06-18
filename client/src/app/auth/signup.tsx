@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSignUp } from '../services/auth.service';
+import { useSignUp, useLogin } from '../services/auth.service';
 import './auth.css';
 
 const SignupForm: React.FC = () => {
@@ -7,6 +7,7 @@ const SignupForm: React.FC = () => {
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
     const {mutate: signUp} = useSignUp();
+    const {mutate: login} = useLogin();
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
@@ -14,6 +15,7 @@ const SignupForm: React.FC = () => {
 
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUsername(e.target.value);
+        localStorage.setItem('username', e.target.value);
     };
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,6 +25,8 @@ const SignupForm: React.FC = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         signUp({username: username, password: password, email: email})
+        login({username: username, password: password});
+        window.location.href = '/find-tournament';
     };
 
     return (

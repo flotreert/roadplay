@@ -1,13 +1,12 @@
 """This module contains functions to interact with the database."""
-import logging
-
 import sqlalchemy as sa
 
+from common import custom_logging as logging
 from core.tournaments_manager import model
 from core.tournaments_manager import schemas
-
 ### TOURNAMENTS ###
 
+logger = logging.custom_logging(__name__)
 
 def add_tournament(
     session: sa.orm.Session,
@@ -23,7 +22,7 @@ def add_tournament(
 def get_tournaments(session: sa.orm.Session) -> list[model.Tournament]:
     """Get all tournaments"""
     tournaments = session.query(model.Tournament).all()
-    logging.info('%s', tournaments)
+    logger.info('%s', tournaments)
     session.close()
     return tournaments
 
@@ -47,10 +46,10 @@ def update_tournament(
     old_tournament = (session.query(
         model.Tournament).filter(model.Tournament.id == tournament_id).first())
     if not old_tournament:
-        logging.error('Tournament %s not found', tournament_id)
+        logger.error('Tournament %s not found', tournament_id)
         return None
     if user_id != old_tournament.organizer_id:
-        logging.warning('User %s is not the organizer of %s', user_id,
+        logger.warning('User %s is not the organizer of %s', user_id,
                         tournament_id)
         return None
     old_tournament.name = new_tournament.name if new_tournament.name else old_tournament.name
@@ -85,10 +84,10 @@ def delete_tournament(session: sa.orm.Session, tournament_id: int,
     tournament = session.query(
         model.Tournament).filter(model.Tournament.id == tournament_id).first()
     if not tournament:
-        logging.error('Tournament %s not found', tournament_id)
+        logger.error('Tournament %s not found', tournament_id)
         return None
     if user_id != tournament.organizer_id:
-        logging.warning('User %s is not the organizer')
+        logger.warning('User %s is not the organizer')
         return None
     session.delete(tournament)
     session.commit()
@@ -108,13 +107,13 @@ def fill_tournament(
     tournament = session.query(
         model.Tournament).filter(model.Tournament.id == tournament_id).first()
     if not tournament:
-        logging.error('Tournament %s not found', tournament_id)
+        logger.error('Tournament %s not found', tournament_id)
         return None
     if tournament.is_full:
-        logging.warning('Tournament %s is full', tournament_id)
+        logger.warning('Tournament %s is full', tournament_id)
         return None
     if user_id in tournament.participants:
-        logging.warning('User/Team %s already in tournament %s', user_id,
+        logger.warning('User/Team %s already in tournament %s', user_id,
                         tournament_id)
         return None
     
@@ -127,7 +126,7 @@ def fill_tournament(
         tournament.is_full = True
     session.commit()
     session.close()
-    logging.error(
+    logger.error(
         '%s',
         session.query(model.Tournament).filter(
             model.Tournament.id == tournament_id).first().participants)
@@ -144,10 +143,10 @@ def remove_team(
     tournament = (session.query(
         model.Tournament).filter(model.Tournament.id == tournament_id).first())
     if not tournament:
-        logging.error('Tournament %s not found', tournament_id)
+        logger.error('Tournament %s not found', tournament_id)
         return None
     if user_id not in tournament.participants:
-        logging.warning('User/team %s not in tournament %s', user_id,
+        logger.warning('User/team %s not in tournament %s', user_id,
                         tournament_id)
         return None
     

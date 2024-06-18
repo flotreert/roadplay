@@ -1,18 +1,24 @@
 """Users schemas."""
-import pydantic 
+import pydantic
 
 
-class UserBase(pydantic.BaseModel):
+class UserDisplay(pydantic.BaseModel):
+    """User display schema."""
     username: str
-    email: str
-    role: str
+    past_tournaments: list[int]
+    current_tournaments: list[int]
+    futur_tournaments: list[int]
+    organizer_tournaments: list[int]
 
 
-class Users(UserBase):
+class User(UserDisplay):
+    """User schema."""
     id: int
 
-    mode_config = pydantic.ConfigDict(from_attributes=True)
-    
-    
-class UserCreate(UserBase):
-    password: str
+
+class UserUpdate(pydantic.BaseModel):
+    """User update schema."""
+    past_tournaments: list[int] = []
+    current_tournaments: list[int] = []
+    futur_tournaments: list[int] = []
+    organizer_tournaments: list[int] = []

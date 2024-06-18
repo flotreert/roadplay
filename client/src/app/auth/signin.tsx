@@ -19,6 +19,7 @@ const SignInForm: React.FC = () => {
 
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUsername(e.target.value);
+        localStorage.setItem('username', e.target.value);
     };
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,6 +30,7 @@ const SignInForm: React.FC = () => {
         e.preventDefault();
         login({username: username, password: password});
         setIsSignin(true);
+        window.location.href = '/find-tournament';
     };
 
     return (

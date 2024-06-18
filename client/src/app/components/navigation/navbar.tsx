@@ -72,8 +72,8 @@ const Navbar = () => {
 
         <div className="navbar-connect">
           {AuthToken() ? (
-            <div>
-              <p>Welcome, logged in </p>
+            <div style={{}}>
+              <p>Welcome {localStorage.getItem('username')}, logged in </p>
             </div>
           ) : (
             <div>

@@ -1,19 +1,11 @@
 """This module contains the functions to download and upload image files to the storage path """
 import base64
-import logging
-import io
 import os
 import uuid
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    filename='app.log',
-    filemode='a',
-    format='%(asctime)s - %(levelname)s - %(message)s',
-)
-logger = logging.getLogger(__name__)
+from common import custom_logging as logging
+logger = logging.custom_logging(__name__)
 FOLDER = 'data/'
-
 
 def get_storage_path(folder: str | None = None):
     """Creates a storage path for the image file """
