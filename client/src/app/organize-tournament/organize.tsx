@@ -124,7 +124,6 @@ const OrganizeForm: React.FC<FormProps> = () => {
         
     }
 
-    // TODO: Replace by images
     const imageSports: {[key: string]: string} = {
         'Football': '/football.png',
         'Basketball': '/basketball.png',

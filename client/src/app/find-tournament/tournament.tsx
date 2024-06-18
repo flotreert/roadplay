@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Tournament } from '../../client/types/tournaments';
 import { convertBinaryToDataURI } from '../components/images';
 import ProgressBarHor from '@/app/components/progressBarHor';
+import { calculateFilling, isDateLessThan10Days } from '../components/utils';
 import './tournament.css';
 
 
@@ -22,17 +23,7 @@ const columns = {
     images: 'Images',
 } 
 
-const calculateFilling = (tournament: Tournament) => {
-    return Math.floor(tournament.participants.length / tournament.number_of_teams * 100);
-};
 
-const isDateLessThan10Days = (date: string): boolean => {
-    const currentDate = new Date();
-    const tournamentDate = new Date(date);
-    const differenceInTime = tournamentDate.getTime() - currentDate.getTime();
-    const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
-    return differenceInDays < 15;
-};
 
 const TournamentList: React.FC<TournamentListProps> = ({ tournaments, onClick }) => {
     return (
