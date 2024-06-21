@@ -29,6 +29,7 @@ class Tournament(db.Base):
     participants = sa.Column(sa.ARRAY(sa.Integer), nullable=True, default=[])
     is_full = sa.Column(sa.Boolean, default=False)
     description = sa.Column(sa.String(1000))
+    images = sa.Column(sa.ARRAY(sa.String(255)), nullable=True)
 
     def __repr__(self):
         return f'Tournament {self.name} created at {self.created_at} '

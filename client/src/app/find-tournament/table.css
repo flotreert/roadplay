@@ -62,10 +62,6 @@
 
 /* Table row styles */
 
-tr:hover {
-    cursor: pointer;
-}
-
 .filterTags {
     display: flex;
     flex-direction: row;
@@ -86,8 +82,9 @@ tr:hover {
     border: 1px solid #e0e0e0;
     border-radius: 5px;
     padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    max-width: 300px
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    height:fit-content
 }
 
 .filter-button{
@@ -121,30 +118,3 @@ input[type="range"]{
 }
 
 
-.grid-tournament-container {
-    margin-left: 25px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;  
-    width: 90%;
-    flex-direction: horizontal;
-    justify-content: space-between;
-  }
-.grid-tournament-item {
-    margin: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); 
-    border-radius: 10px;
-    padding: 5px;
-    min-width: 250px;
-    cursor: pointer;
-    
-}
-.grid-tournament-item:hover {
-    transform: scale(1.1);
-    background-color: #e6e3e3;
-}
-.name {
-    font-weight: 650;
-    display: flex;
-    justify-content: center;
-    margin: 10px;
-  }

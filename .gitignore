@@ -46,3 +46,6 @@ next-env.d.ts
 
 # generated files
 /client/src/client/generated
+
+#All data from the platform: TODO Google cloud
+/data

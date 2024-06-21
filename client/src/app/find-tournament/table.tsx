@@ -3,6 +3,7 @@ import { Tournament } from '../../client/types/tournaments';
 import { useGetTournaments } from '../services/tournaments.service';
 import FeesSelector from './feesSelector';
 import MultiRangeSlider from '../components/doubleSlider';
+import TournamentList from './tournament';
 import './table.css';
 import '../components/tags.css';
 interface Filter {
@@ -14,7 +15,6 @@ const filterData = (data: Tournament[], filter: Filter) => {
     return data.filter(item => {
         switch (filter.key) {
             case 'fees':
-                console.log('fees', filter.value[0], filter.value[1])
                 return (item.fees >= filter.value[0] && item.fees <= filter.value[1]);
             case 'sport':
                 return filter.value.includes(item.sport) || filter.value.length === 0;
@@ -47,14 +47,6 @@ const multiFilterData = (data: Tournament[], filters: Filter[]) => {
 );
 }
 
-
-const columns = {
-    name: 'Name',
-    start_date: 'Start Date',
-    location: 'Location',
-    fees: 'Fees',
-    number_of_teams: 'Teams',
-} 
 
 const TournamentTable: React.FC = () => {
     const { data: allData } = useGetTournaments();
@@ -237,26 +229,7 @@ const TournamentTable: React.FC = () => {
                             <button className='sort' onClick={handleFeeSort}>fees</button>
                         </div>
                     </div>
-                    <div className='grid-tournament-container'>
-                        {data?.map((item) => (
-                            <div className='grid-tournament-item' key={item.id} onClick={() => handleTournamentClick(item)}>
-                                <div className='name'>
-                                    {item.name}
-                                </div>
-                                {Object.entries(item).map(([key, value]) => {
-                                    if (key !== 'name' && key in columns) {
-                                        return (
-                                            <div key={key}>
-                                                <h6>{columns[key as keyof typeof columns]}</h6>
-                                                {value}
-                                            </div>
-                                        );
-                                    }
-                                    return null;
-                                })}
-                            </div>
-                        ))}
-                    </div>
+                    <TournamentList tournaments={data || []} onClick={handleTournamentClick}/>
                 </div>
             </div>
         </div>

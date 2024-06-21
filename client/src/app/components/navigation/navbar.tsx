@@ -27,7 +27,7 @@ const Navbar = () => {
       <div className="navbar">
         <div className="navbar-logo">
           <Link href="/">
-            <Image src="/logo.png" alt="Tournaments Logo" width={100} height={100} />
+            <Image src="/logo.png" alt="Tournaments Logo" width={60} height={60} />
           </Link>
         </div>
         <div className="navbar-action">
@@ -35,14 +35,14 @@ const Navbar = () => {
             <li>
               <a href="/organize-tournament">
                 <button>
-                  Organize tournament
+                  Organize
                 </button>
               </a>
             </li>
             <li>
               <a href="/find-tournament">
                 <button>
-                  Find tournament
+                  Find
                 </button>
               </a>
             </li>
@@ -72,8 +72,8 @@ const Navbar = () => {
 
         <div className="navbar-connect">
           {AuthToken() ? (
-            <div>
-              <p>Welcome, logged in </p>
+            <div style={{}}>
+              <p>Welcome {localStorage.getItem('username')}, logged in </p>
             </div>
           ) : (
             <div>

@@ -22,6 +22,12 @@
     margin-top: 5px;
 }
 
+.inputs-form-line{
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+}
+
 /* Styling for inputs*/
 
 input{
@@ -30,9 +36,9 @@ input{
 
 input[type="text"] {    
     font-size: large;
-    background-color: rgb(235, 235, 235);
+    background-color: rgb(251, 254, 255);
     padding: 10px 0px;
-    border: 1px solid #ccc;
+    border: 1px solid #808080;
     border-radius: 10px;
     font-size: large;
     margin: 10px;
@@ -41,14 +47,37 @@ input[type="text"] {
 input[type="date"] {    
     font-size: large;
     font-family: 'Courier New', Courier, monospace;
-    background-color: rgb(235, 235, 235);
+    background-color: rgb(251, 254, 255);
     padding: 10px 0px;
-    border: 1px solid #ccc;
+    border: 1px solid #808080;
     border-radius: 10px;
     font-size: large;
     margin: 10px;
 }
 
+.custom-file-button {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+	input[type="file"] {
+		margin-left: -2px !important;
+
+		&::-webkit-file-upload-button {
+			display: none;
+		}
+		&::file-selector-button {
+			display: none;
+		}
+	}
+
+	&:hover {
+		label {
+			background-color: #dde0e3;
+			cursor: pointer;
+		}
+	}
+}
 
 
 input[type="number"] {    
@@ -67,11 +96,10 @@ input[type="checkbox"]{
     margin: 5 0;
     padding: 0 0;
     justify-content: right;
-    border: 1px solid #ccc;
+    border: 1px solid #808080;
     margin: 10px;
     width: 20px;
     padding: 10px;
-    border: 1px solid #ccc;
     border-radius: 10px;
     font-size: large;
     margin: 10px;
@@ -86,7 +114,7 @@ input[type="range"]{
 /* Styling for select bar */
 select {
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #808080;
     border-radius: 10px;
     font-size: large;
     margin-top: 2px;
@@ -101,8 +129,8 @@ textarea {
     align-items: left;
     justify-content: space-between;
     width: 100%	;
-    background-color: rgb(235, 235, 235);
-    border: 1px solid #ccc;
+    background-color: rgb(251, 254, 255);
+    border: 1px solid #808080;
     font-size: large;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     border-radius: 10px;
@@ -246,4 +274,47 @@ button[type="submit"] {
     font-size: large;
     margin: 10px;
     cursor: pointer;
+}
+
+.sport-button{
+    width: 80px;
+    padding: 10px;
+    background-color: transparent;
+    border: none;
+    border-radius: 10px;
+    font-size: large;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.sport-button:hover{
+    background-color: var(--dynamic-color);
+    transform: scale(1.3);
+}
+
+.sport-button-validate{
+    width: 80px;
+    padding: 10px;
+    background-color: var(--dynamic-color);
+    border: none;
+    border-radius: 10px;
+    font-size: large;
+    margin: 10px;
+    cursor: pointer;
+    transform: scale(1.3);
+}
+
+.upload{
+    border: #ccc 1px solid;
+    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    font-size:x-large;
+    font-weight: 800;
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    justify-content: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
 }

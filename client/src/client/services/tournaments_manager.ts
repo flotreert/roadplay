@@ -76,18 +76,25 @@ export class TournamentsService {
     
     /**
      * Update Tournament
+     * Update a tournament
+     * Args:
+     * tournament_id (int): Tournament ID
+     * db (orm.Session): Database session
      * @param data The data for the request.
      * @param data.tournamentId
+     * @param data.requestBody
      * @returns unknown Successful Response
      * @throws ApiError
      */
-    public static updateTournamentTournamentsTournamentIdPut(data: $OpenApiTs['/tournaments/{tournament_id}']['put']['req']): CancelablePromise<$OpenApiTs['/tournaments/{tournament_id}']['put']['res'][200]> {
+    public static updateTournamentTournamentsTournamentIdPatch(data: $OpenApiTs['/tournaments/{tournament_id}']['patch']['req']): CancelablePromise<$OpenApiTs['/tournaments/{tournament_id}']['patch']['res'][200]> {
         return __request(client, {
-            method: 'PUT',
+            method: 'PATCH',
             url: '/tournaments/{tournament_id}',
             path: {
                 tournament_id: data.tournamentId
             },
+            body: data.requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: 'Validation Error'
             }
@@ -147,6 +154,76 @@ export class TournamentsService {
             url: '/tournaments/{tournament_id}/remove_team',
             path: {
                 tournament_id: data.tournamentId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+}
+
+
+export class ParticipantsService {
+    /**
+     * Get All
+     * Gets all participants
+     * @returns ParticpantBase Successful Response
+     * @throws ApiError
+     */
+    public static getAllParticipantsGet(): CancelablePromise<$OpenApiTs['/participants']['get']['res'][200]> {
+        return __request(client, {
+            method: 'GET',
+            url: '/participants'
+        });
+    }
+    
+    /**
+     * Get Particpant
+     * Gets participant by id
+     * @param data The data for the request.
+     * @param data.participantId
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static getParticpantParticipantParticipantIdGet(data: $OpenApiTs['/participant/{participant_id}']['get']['req']): CancelablePromise<$OpenApiTs['/participant/{participant_id}']['get']['res'][200]> {
+        return __request(client, {
+            method: 'GET',
+            url: '/participant/{participant_id}',
+            path: {
+                participant_id: data.participantId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Get My Participant
+     * Gets my participation
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static getMyParticipantParticipantMeGet(): CancelablePromise<$OpenApiTs['/participant/@me']['get']['res'][200]> {
+        return __request(client, {
+            method: 'GET',
+            url: '/participant/@me'
+        });
+    }
+
+    /**
+     * Get  Participant tournaments
+     * Gets participation tournaments
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static getMyParticipantParticipantGetTournaments(data: $OpenApiTs['/participant/{participant_id}/tournaments']['get']['req']): CancelablePromise<$OpenApiTs['/participant/{participant_id}/tournaments']['get']['res'][200]> {
+        return __request(client, {
+            method: 'GET',
+            url: '/participant/{participant_id}/tournaments',
+            path: {
+                participant_id: data.participantId
             },
             errors: {
                 422: 'Validation Error'

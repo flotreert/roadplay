@@ -1,6 +1,7 @@
 import {useQuery, useMutation, UseMutationOptions} from '@tanstack/react-query';
 import { TournamentDisplay } from '@/client/types/tournaments';
 import { TournamentsService } from '@/client';
+import { ParticipantsService } from '@/client/services/tournaments_manager';
 
 const actions = {createTournament: ()  => ({
     mutationFn: (data: TournamentDisplay) => TournamentsService.createTournamentTournamentsPost({requestBody: data}),
@@ -16,7 +17,7 @@ const actions = {createTournament: ()  => ({
         mutationFn: (id: number) => TournamentsService.fillTournamentTournamentsTournamentIdFillPut({tournamentId: id}),
         mutationKey: ['fillTournament', 'fill'],
         onSuccess: () => {
-            console.log('Tournament filled successfully');
+            window.alert('Tournament filled successfully');
         },
         onError: (error: any) => {
             window.alert('Error filling tournament' + error);
@@ -45,3 +46,16 @@ export const useGetTournament = (id: number) => {
     });
 }
 
+export const useGetParticipantMe = () => {
+    return useQuery({
+        queryFn: () => ParticipantsService.getMyParticipantParticipantMeGet(),
+        queryKey: ['getParticipants'],
+    });
+}
+
+export const useGetParticipantTournaments = (id: number) => {
+    return useQuery({
+        queryFn: () => ParticipantsService.getMyParticipantParticipantGetTournaments({participantId: id}),
+        queryKey: ['getParticipantsTournaments', id],
+    });
+}

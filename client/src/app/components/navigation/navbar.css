@@ -1,11 +1,19 @@
-.navbar{
+.navbar {
     background-color: transparent;
-    color: #4e4d4d;
-    padding: 5px;
     display: flex;
+    padding: 5px;
+    margin-bottom: 10px;
     justify-content: space-between;
+    align-items: center;
     max-width: 100%;
+    width: 100vw;
+    height: 60px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.226);
+    transition: height 3s;
+    top: 0;
+    left: 0;
 }
+
 
 .navbar:hover {
     color: black;
@@ -139,7 +147,7 @@
 
 .network button{
     padding: 10px 20px;
-    background-color: #22528a;
+    background-color: #a1caf9;
     color: #fff;
     border: none;
     border-radius: 10px;

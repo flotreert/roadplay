@@ -23,7 +23,10 @@ open many terminals:
 - [ ] Map => openstreetview
 - [x] Refacto Find tournament
 - [ ] Image on server (todo on Google)
-- [ ] Participate to tournament page
+- [x] Participate to tournament page
+- [ ] LRU cache for same inputs 
+- [ ] http handler response
+- [ ] notify onSuccess and onError
 
 
 
