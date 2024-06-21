@@ -9,9 +9,9 @@ export default function Home() {
         <a href="/auth">
           <Image src="/logo.png" alt="Tournaments Logo" width={150} height={150}/>
         </a>
-        <desc >Social Network for teams to compete in worldwide tournaments. 
+        <label >Social Network for teams to compete in worldwide tournaments. 
           Register to create or join a tournament.
-        </desc>
+        </label>
         <a href="/auth">
           <button>Register</button>
         </a>

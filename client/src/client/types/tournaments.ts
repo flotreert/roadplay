@@ -5,6 +5,32 @@ export type HTTPValidationError = {
 };
 
 /**
+ * Full schemas for particpant
+ */
+export type ParticipantBase = {
+    participant_id: number;
+    tournaments_ids?: Array<(number)>;
+    organized_ids?: Array<(number)>;
+    id: number;
+};
+
+export type ParticipantCreate = {
+    participant_id: number;
+    tournaments_ids?: Array<(number)>;
+    organized_ids?: Array<(number)>;
+}
+
+export type ParticipantUpdate = {
+    tournaments_ids: Array<(number)>;
+    participant_id: number;
+}
+
+export type OrganizerUpdate = {
+    tournaments_ids: Array<(number)>;
+    participant_id: number;
+}
+
+/**
  * Tournament model
  */
 export type Tournament = {
@@ -19,7 +45,7 @@ export type Tournament = {
     end_date: string;
     location: string;
     sport: string;
-    age_group: Array<(number)>;
+    age_group: number[];
     category: string;
     fees: number;
     number_of_teams: number;
@@ -38,12 +64,12 @@ export type TournamentDisplay = {
     end_date: string;
     location: string;
     sport: string;
-    age_group: Array<(number)>;
+    age_group: number[];
     category: string;
     fees: number;
     number_of_teams: number;
     description: string;
-    images?: Array<(string | ArrayBuffer )> | null;
+    images: Array<((string | ArrayBuffer))>;
 };
 
 export type ValidationError = {
@@ -167,6 +193,56 @@ export type $OpenApiTs = {
                  * Validation Error
                  */
                 422: HTTPValidationError;
+            };
+        };
+    };
+    '/participants': {
+        get: {
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: Array<ParticipantBase>;
+            };
+        };
+    };
+    '/participant/{participant_id}': {
+        get: {
+            req: {
+                participantId: number;
+            };
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: ParticipantBase | null;
+                /**
+                 * Validation Error
+                 */
+                422: HTTPValidationError;
+            };
+        };
+    };
+    '/participant/@me': {
+        get: {
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: ParticipantBase | null;
+            };
+        };
+    };
+    '/participant/{participant_id}/tournaments': {
+        get: {
+            req: {
+                participantId: number;
+            };
+            res: {
+                /**
+                 * Successful Response
+                 */
+                200: Array<Tournament> | null;
             };
         };
     };

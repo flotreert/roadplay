@@ -1,12 +1,13 @@
-"""This module contains functions to interact with the database."""
+"""Database funciton for the tournaments."""
 import sqlalchemy as sa
 
 from common import custom_logging as logging
-from core.tournaments_manager import model
-from core.tournaments_manager import schemas
+from core.tournaments_manager.tournaments import model
+from core.tournaments_manager.tournaments import schemas
 ### TOURNAMENTS ###
 
 logger = logging.custom_logging(__name__)
+
 
 def add_tournament(
     session: sa.orm.Session,
@@ -28,12 +29,12 @@ def get_tournaments(session: sa.orm.Session) -> list[model.Tournament]:
 
 
 def get_tournament_by_id(session: sa.orm.Session,
-                         tournament_id: int) -> model.Tournament:
+                         tournament_id: int) -> schemas.Tournament:
     """Gets tournament by id."""
-    tournament = (session.query(
+    tournament: model.Tournament = (session.query(
         model.Tournament).filter(model.Tournament.id == tournament_id).first())
     session.close()
-    return tournament
+    return schemas.Tournament.model_validate(tournament, from_attributes=True)
 
 
 def update_tournament(
@@ -50,7 +51,7 @@ def update_tournament(
         return None
     if user_id != old_tournament.organizer_id:
         logger.warning('User %s is not the organizer of %s', user_id,
-                        tournament_id)
+                       tournament_id)
         return None
     old_tournament.name = new_tournament.name if new_tournament.name else old_tournament.name
     old_tournament.start_date = (new_tournament.start_date
@@ -114,9 +115,9 @@ def fill_tournament(
         return None
     if user_id in tournament.participants:
         logger.warning('User/Team %s already in tournament %s', user_id,
-                        tournament_id)
+                       tournament_id)
         return None
-    
+
     # TODO: create a Sqlachemy mutable array
     participants = list(tournament.participants)
     participants.append(user_id)
@@ -147,9 +148,9 @@ def remove_team(
         return None
     if user_id not in tournament.participants:
         logger.warning('User/team %s not in tournament %s', user_id,
-                        tournament_id)
+                       tournament_id)
         return None
-    
+
     # TODO: create a Sqlachemy mutable array
     participants = list(tournament.participants)
     participants.remove(user_id)

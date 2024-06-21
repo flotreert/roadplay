@@ -7,8 +7,8 @@ from alembic import context
 
 from common import db
 from auth.user.db import User
-from core.tournaments_manager import model
-from core.users_manager import model as user_model
+from core.tournaments_manager.tournaments import model
+from core.tournaments_manager.participants import model
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
